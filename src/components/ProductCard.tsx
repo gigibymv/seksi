@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Minus, Check, X } from "lucide-react";
+import { Plus, Minus, Check, X, ShoppingBag } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCart, Size } from "@/context/CartContext";
 import SizeGuide from "./SizeGuide";
@@ -98,42 +98,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </p>
         )}
 
-        {/* Variants */}
-        {product.variants && product.variants.length > 1 && (
-          <div className="flex items-center gap-2">
-            <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
-              Color
-            </span>
-            {product.variants.map((v) =>
-              v.color ? (
-                <button
-                  key={v.id}
-                  onClick={() => setActiveVariant(v)}
-                  title={v.label}
-                  className={`w-6 h-6 rounded-full transition-all ${
-                    activeVariant?.id === v.id
-                      ? "ring-2 ring-offset-2 ring-foreground scale-110"
-                      : "hover:scale-110"
-                  }`}
-                  style={{ backgroundColor: v.color }}
-                />
-              ) : (
-                <button
-                  key={v.id}
-                  onClick={() => setActiveVariant(v)}
-                  className={`px-2.5 py-1 text-[11px] font-body border transition-colors ${
-                    activeVariant?.id === v.id
-                      ? "border-foreground text-foreground"
-                      : "border-border text-muted-foreground hover:border-foreground/50"
-                  }`}
-                >
-                  {v.label}
-                </button>
-              )
-            )}
-          </div>
-        )}
-
         {/* Sizes */}
         {!isSoldOut && !isComingSoon && showSizes && (
           <div className="space-y-1.5">
@@ -162,52 +126,87 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Add to Cart / Quantity */}
-        <div className="mt-auto pt-1">
-          {isSoldOut || isComingSoon ? (
-            <button
-              disabled
-              className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-muted text-muted-foreground cursor-not-allowed"
-            >
-              {isSoldOut ? "Sold Out" : "Coming Soon"}
-            </button>
-          ) : quantity === 0 ? (
-            <button
-              onClick={() => !isDisabled && addToCart(product, selectedSize)}
-              disabled={isDisabled}
-              className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
-            >
-              Add to Cart
-            </button>
-          ) : (
-            <div className="flex items-center gap-3">
-              <div className="flex items-center border border-border">
-                <button
-                  onClick={() =>
-                    quantity === 1
-                      ? removeFromCart(product.id, selectedSize)
-                      : updateQuantity(product.id, selectedSize, quantity - 1)
-                  }
-                  className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span className="font-body text-sm font-medium w-8 text-center">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => updateQuantity(product.id, selectedSize, quantity + 1)}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-              </div>
-              <span className="flex items-center gap-1 font-body text-[11px] text-muted-foreground">
-                <Check className="w-3.5 h-3.5" />
-                In cart
-              </span>
+        {/* Bottom Action Row: Variants & Add to Cart */}
+        <div className="mt-auto pt-3 flex flex-wrap items-center justify-between gap-3">
+          {/* Variants */}
+          {product.variants && product.variants.length > 1 ? (
+            <div className="flex items-center gap-2">
+              {product.variants.map((v) =>
+                v.color ? (
+                  <button
+                    key={v.id}
+                    onClick={() => setActiveVariant(v)}
+                    title={v.label}
+                    className={`w-4 h-4 rounded-full transition-all ${
+                      activeVariant?.id === v.id
+                        ? "ring-1 ring-offset-2 ring-foreground scale-110"
+                        : "hover:scale-110 opacity-80"
+                    }`}
+                    style={{ backgroundColor: v.color }}
+                  />
+                ) : (
+                  <button
+                    key={v.id}
+                    onClick={() => setActiveVariant(v)}
+                    className={`px-2 py-1 text-[10px] font-body border transition-colors ${
+                      activeVariant?.id === v.id
+                        ? "border-foreground text-foreground"
+                        : "border-border text-muted-foreground hover:border-foreground/50"
+                    }`}
+                  >
+                    {v.label}
+                  </button>
+                )
+              )}
             </div>
+          ) : (
+            <div />
           )}
+
+          {/* Add to Cart / Quantity */}
+          <div className="shrink-0 flex items-center justify-end">
+            {isSoldOut || isComingSoon ? (
+              <button
+                disabled
+                className="px-4 py-2.5 font-body text-[10px] uppercase tracking-widest bg-muted text-muted-foreground cursor-not-allowed"
+              >
+                {isSoldOut ? "Sold Out" : "Coming Soon"}
+              </button>
+            ) : quantity === 0 ? (
+              <button
+                onClick={() => !isDisabled && addToCart(product, selectedSize)}
+                disabled={isDisabled}
+                className="p-2.5 font-body text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+                aria-label="Add to Cart"
+              >
+                <ShoppingBag className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center border border-border">
+                  <button
+                    onClick={() =>
+                      quantity === 1
+                        ? removeFromCart(product.id, selectedSize)
+                        : updateQuantity(product.id, selectedSize, quantity - 1)
+                    }
+                    className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
+                  >
+                    <Minus className="w-3 h-3" />
+                  </button>
+                  <span className="font-body text-xs font-medium w-6 text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => updateQuantity(product.id, selectedSize, quantity + 1)}
+                    className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

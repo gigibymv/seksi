@@ -49,10 +49,28 @@ const Index = () => {
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-px md:gap-1">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {filteredProducts
+            .filter((p) => !p.comingSoon)
+            .map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
         </div>
+
+        {/* Coming Soon Grid */}
+        {filteredProducts.filter((p) => p.comingSoon).length > 0 && (
+          <div className="mt-20 md:mt-32">
+            <h3 className="font-display text-2xl text-foreground text-center mb-10">
+              Coming Soon
+            </h3>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-px md:gap-1">
+              {filteredProducts
+                .filter((p) => p.comingSoon)
+                .map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Footer */}
