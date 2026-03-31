@@ -233,22 +233,24 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
-                    {quantity === 0 && (
-                      <button
-                        onClick={() => {
+                    
+                    <button
+                      onClick={() => {
+                        if (quantity === 0) {
                           addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
-                          setIsAddingMode(false);
                           setTempQuantity(1);
                           setIsCartOpen(true);
-                        }}
-                        className="bg-foreground text-background h-9 px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
-                      >
-                        Add
-                      </button>
-                    )}
+                        }
+                        setIsAddingMode(false);
+                      }}
+                      className="bg-foreground text-background h-9 px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
+                    >
+                      {quantity > 0 ? "Done" : "Add"}
+                    </button>
+
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className={`p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0 ${quantity > 0 ? "ml-auto" : ""}`}
+                      className="p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -351,22 +353,24 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
-                    {quantity === 0 && (
-                      <button
-                        onClick={() => {
+                    
+                    <button
+                      onClick={() => {
+                        if (quantity === 0) {
                           addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
-                          setIsAddingMode(false);
                           setTempQuantity(1);
                           setIsCartOpen(true);
-                        }}
-                        className="bg-foreground text-background h-full px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
-                      >
-                        Add
-                      </button>
-                    )}
+                        }
+                        setIsAddingMode(false);
+                      }}
+                      className="bg-foreground text-background h-full px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
+                    >
+                      {quantity > 0 ? "Done" : "Add"}
+                    </button>
+
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className={`p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0 ${quantity > 0 ? "ml-auto" : ""}`}
+                      className="p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0"
                     >
                       <X className="w-4 h-4" />
                     </button>
