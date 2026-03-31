@@ -156,24 +156,27 @@ const Admin = () => {
   };
 
   const clearTestOrders = async () => {
-    if (!window.confirm("Move ALL currently visible orders to Archive?")) return;
+    if (!window.confirm("CRITICAL: This will PERMANENTLY DELETE all orders and reset all statistics for Go-Live. Are you sure?")) return;
     
-    const idsToArchive = filteredOrders.map(o => o.id);
-    if (idsToArchive.length === 0) return;
-
     try {
+      setLoading(true);
+      // We delete all orders. 
+      // Note: order_items should have 'on delete cascade' in Supabase.
       const { error } = await supabase
         .from("orders")
-        .update({ status: "archived" })
-        .in("id", idsToArchive);
+        .delete()
+        .neq("id", "00000000-0000-0000-0000-000000000000"); // Standard way to 'delete all' via client
         
       if (error) throw error;
       
-      setOrders(prev => prev.map(o => idsToArchive.includes(o.id) ? { ...o, status: "archived" } : o));
-      toast.success(`${idsToArchive.length} orders archived`);
+      setOrders([]);
+      setSelected(new Set());
+      toast.success("Dashboard cleared. Ready for launch!");
     } catch (err) {
-      console.error("Error bulk archiving:", err);
-      toast.error("Archiving failed");
+      console.error("Error clearing orders:", err);
+      toast.error("Format clear failed. Please check Supabase RLS.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -341,10 +344,10 @@ const Admin = () => {
           <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={clearTestOrders}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-destructive/5 text-destructive/70 font-body text-[10px] uppercase tracking-widest hover:bg-destructive/10 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-destructive/10 text-destructive font-body text-[10px] uppercase tracking-widest hover:bg-destructive/20 transition-colors border border-destructive/20"
             >
               <Trash2 className="w-3 h-3" />
-              Archive All Visible
+              Reset Dashboard for Go-Live
             </button>
             {selected.size > 0 && (
               <button
