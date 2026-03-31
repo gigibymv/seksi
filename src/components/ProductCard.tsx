@@ -100,19 +100,33 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
               Color
             </span>
-            {product.variants.map((v) => (
-              <button
-                key={v.id}
-                onClick={() => setActiveVariant(v)}
-                className={`px-2.5 py-1 text-[11px] font-body border transition-colors ${
-                  activeVariant?.id === v.id
-                    ? "border-foreground text-foreground"
-                    : "border-border text-muted-foreground hover:border-foreground/50"
-                }`}
-              >
-                {v.label}
-              </button>
-            ))}
+            {product.variants.map((v) =>
+              v.color ? (
+                <button
+                  key={v.id}
+                  onClick={() => setActiveVariant(v)}
+                  title={v.label}
+                  className={`w-6 h-6 rounded-full transition-all ${
+                    activeVariant?.id === v.id
+                      ? "ring-2 ring-offset-2 ring-foreground scale-110"
+                      : "hover:scale-110"
+                  }`}
+                  style={{ backgroundColor: v.color }}
+                />
+              ) : (
+                <button
+                  key={v.id}
+                  onClick={() => setActiveVariant(v)}
+                  className={`px-2.5 py-1 text-[11px] font-body border transition-colors ${
+                    activeVariant?.id === v.id
+                      ? "border-foreground text-foreground"
+                      : "border-border text-muted-foreground hover:border-foreground/50"
+                  }`}
+                >
+                  {v.label}
+                </button>
+              )
+            )}
           </div>
         )}
 

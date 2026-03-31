@@ -28,9 +28,6 @@ const Index = () => {
           <h2 className="font-display text-2xl md:text-4xl font-medium text-foreground">
             The Collection
           </h2>
-          <p className="font-body text-xs text-muted-foreground mt-2 uppercase tracking-[0.2em]">
-            In partnership with Levi's
-          </p>
         </div>
 
         {/* Category filters */}

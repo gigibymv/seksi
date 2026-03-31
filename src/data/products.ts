@@ -12,6 +12,7 @@ export type Category = "cap" | "tshirt" | "jacket" | "hoodie";
 export interface ProductVariant {
   id: string;
   label: string;
+  color?: string;
   image: string;
   secondaryImage?: string;
 }
@@ -36,52 +37,52 @@ export const products: Product[] = [
   {
     id: "nine-cap-black-red",
     name: 'The Nine Cap — "Noire" & "Rouge"',
-    price: 35,
+    price: 30,
     category: "cap",
     image: hatBlackRed,
     description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
     variants: [
-      { id: "cap-black", label: "Black", image: hatBlackRed },
-      { id: "cap-red", label: "Red", image: hatBlackRed },
+      { id: "cap-black", label: "Black", color: "#1a1a1a", image: hatBlackRed },
+      { id: "cap-red", label: "Red", color: "#c0392b", image: hatBlackRed },
     ],
     sizes: ["One Size"],
   },
   {
     id: "nine-cap-green-blue",
     name: 'The Nine Cap — "Verte" & "Bleue"',
-    price: 35,
+    price: 30,
     category: "cap",
     image: hatGreenBlue,
     description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
     variants: [
-      { id: "cap-green", label: "Green", image: hatGreenBlue },
-      { id: "cap-blue", label: "Blue", image: hatGreenBlue },
+      { id: "cap-green", label: "Green", color: "#1e7a3c", image: hatGreenBlue },
+      { id: "cap-blue", label: "Blue", color: "#2c5fa8", image: hatGreenBlue },
     ],
     sizes: ["One Size"],
   },
   {
     id: "nine-cap-yellow-pink",
     name: 'The Nine Cap — "Jaune" & "Rose"',
-    price: 35,
+    price: 30,
     category: "cap",
     image: hatYellowPink,
     description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
     variants: [
-      { id: "cap-yellow", label: "Yellow", image: hatYellowPink },
-      { id: "cap-pink", label: "Pink", image: hatYellowPink },
+      { id: "cap-yellow", label: "Yellow", color: "#e6c84c", image: hatYellowPink },
+      { id: "cap-pink", label: "Pink", color: "#d4829e", image: hatYellowPink },
     ],
     sizes: ["One Size"],
   },
   {
     id: "nine-cap-jean-brown",
     name: 'The Nine Cap — "Jean" & "Marron"',
-    price: 35,
+    price: 30,
     category: "cap",
     image: hatJeanBrown,
     description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
     variants: [
-      { id: "cap-jean", label: "Jean", image: hatJeanBrown },
-      { id: "cap-brown", label: "Brown", image: hatJeanBrown },
+      { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown },
+      { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
     ],
     sizes: ["One Size"],
   },
