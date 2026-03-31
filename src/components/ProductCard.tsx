@@ -169,8 +169,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Sizes & Actions Combined Row */}
         <div className="mt-4">
           {!isSoldOut && !isComingSoon && showSizes ? (
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1">
+            <div className={`flex ${isAddingMode ? "flex-col sm:flex-row items-stretch sm:items-center" : "items-center"} justify-between gap-3 sm:gap-4 w-full`}>
+              <div className="flex-1 min-w-0 font-body">
                 <Select value={selectedSize} onValueChange={(value) => setSelectedSize(value as Size)}>
                   <SelectTrigger className="w-full font-body text-[9px] md:text-[10px] uppercase tracking-[0.15em] border-border bg-card h-8 px-2.5 hover:border-foreground transition-colors focus:ring-0 focus:ring-offset-0 rounded-none">
                     <div className="flex items-center gap-2">
@@ -222,21 +222,20 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     </button>
                   </div>
                 ) : isAddingMode ? (
-                  // State 2: Selection Mode - Stepper + ADD Button
-                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300">
-                    <div className="flex items-center border border-border bg-card">
+                  <>
+                    <div className="flex items-center border border-border bg-card flex-1 sm:flex-none">
                       <button
                         onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                        className="w-10 h-8 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                      <span className="font-body text-xs font-medium flex-1 sm:w-6 text-center text-foreground">
                         {tempQuantity}
                       </span>
                       <button
                         onClick={() => setTempQuantity(tempQuantity + 1)}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                        className="w-10 h-8 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -248,17 +247,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         setTempQuantity(1);
                         setIsCartOpen(true);
                       }}
-                      className="bg-foreground text-background px-3 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
+                      className="bg-foreground text-background px-4 sm:px-3 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors flex-1 sm:flex-none"
                     >
                       Add
                     </button>
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className="p-1 text-muted-foreground hover:text-foreground"
+                      className="p-1 text-muted-foreground hover:text-foreground shrink-0"
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
-                  </div>
+                  </>
                 ) : (
                   // State 1: Default - Icon Only (No Text)
                   <button
@@ -336,22 +335,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   </div>
                 ) : isAddingMode ? (
                   // State 2: Selection Mode - Stepper + ADD Button for non-size items
-                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300">
-                    <div className="flex items-center border border-border bg-card">
+                  <div className="flex items-center gap-1.5 sm:gap-2 animate-in fade-in slide-in-from-right-2 duration-300 w-full sm:w-auto">
+                    <div className="flex items-center border border-border bg-card min-w-[70px] sm:min-w-0">
                       <button
                         onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                        className="w-7 h-8 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
-                        <Minus className="w-3 h-3" />
+                        <Minus className="w-2.5 h-2.5" />
                       </button>
-                      <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                      <span className="font-body text-[11px] sm:text-xs font-medium w-5 sm:w-6 text-center text-foreground">
                         {tempQuantity}
                       </span>
                       <button
                         onClick={() => setTempQuantity(tempQuantity + 1)}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                        className="w-7 h-8 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
-                        <Plus className="w-3 h-3" />
+                        <Plus className="w-2.5 h-2.5" />
                       </button>
                     </div>
                     <button
@@ -361,13 +360,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         setTempQuantity(1);
                         setIsCartOpen(true);
                       }}
-                      className="bg-foreground text-background px-3 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
+                      className="bg-foreground text-background px-2.5 sm:px-3 h-8 font-body text-[9px] sm:text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
                     >
                       Add
                     </button>
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className="p-1 text-muted-foreground hover:text-foreground"
+                      className="p-1 text-muted-foreground hover:text-foreground shrink-0"
                     >
                       <X className="w-3 h-3" />
                     </button>
