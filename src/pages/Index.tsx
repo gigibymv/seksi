@@ -78,7 +78,7 @@ const Index = () => {
         <div className="container mx-auto px-4 md:px-6 text-center space-y-3">
           <p className="font-display text-lg text-foreground">sek-si</p>
           <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
-            © 2026 sek-si — Section C · MBA 2027 <br className="md:hidden" />· All rights reserved
+            © Section C · MBA 2027 <br className="md:hidden" />· All rights reserved
           </p>
         </div>
       </footer>
