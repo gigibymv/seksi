@@ -30,8 +30,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
     .reduce((sum, item) => sum + item.quantity, 0);
 
   const isSoldOut = product.soldOut === true;
+  const isComingSoon = product.comingSoon === true;
   const isSizeUnavailable = product.unavailableSizes?.includes(selectedSize);
-  const isDisabled = isSoldOut || isSizeUnavailable;
+  const isDisabled = isSoldOut || isSizeUnavailable || isComingSoon;
 
   return (
     <div className="group relative bg-card">
@@ -53,6 +54,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="absolute top-3 left-3">
             <span className="bg-destructive text-destructive-foreground text-[10px] font-body font-semibold uppercase tracking-widest px-3 py-1">
               Sold Out
+            </span>
+          </div>
+        )}
+
+        {/* Coming soon tag */}
+        {isComingSoon && !isSoldOut && (
+          <div className="absolute top-3 left-3">
+            <span className="bg-foreground/80 text-background text-[10px] font-body font-semibold uppercase tracking-widest px-3 py-1">
+              Coming Soon
             </span>
           </div>
         )}
@@ -106,7 +116,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Sizes */}
-        {!isSoldOut && (
+        {!isSoldOut && !isComingSoon && (
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5 flex-wrap">
               {availableSizes.map((size) => {
@@ -134,12 +144,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Add to Cart / Quantity */}
-        {isSoldOut ? (
+        {isSoldOut || isComingSoon ? (
           <button
             disabled
             className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-muted text-muted-foreground cursor-not-allowed"
           >
-            Sold Out
+            {isSoldOut ? "Sold Out" : "Coming Soon"}
           </button>
         ) : quantity === 0 ? (
           <button
