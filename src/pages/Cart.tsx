@@ -90,7 +90,7 @@ const Cart = () => {
                     )}
                   </p>
                   <p className="font-body text-sm font-semibold text-foreground mt-1">
-                    ${product.price}
+                    <span className="font-sans">$</span>{product.price}
                   </p>
                 </div>
 
@@ -129,7 +129,7 @@ const Cart = () => {
               Total
             </span>
             <span className="font-display text-2xl font-semibold text-foreground">
-              ${totalPrice.toFixed(2)}
+              <span className="font-sans">$</span>{totalPrice.toFixed(2)}
             </span>
           </div>
 

@@ -201,7 +201,7 @@ const Checkout = () => {
                           )}
                         </p>
                         <p className="font-body text-xs font-medium text-foreground mt-1.5">
-                          {item.quantity} × <span className="font-sans">${item.product.price}</span>
+                          {item.quantity} × <span className="font-sans">$</span>{item.product.price}
                         </p>
                       </div>
                     </div>
@@ -210,7 +210,7 @@ const Checkout = () => {
               </div>
               <div className="border-t border-border mt-5 pt-4 flex justify-between items-center">
                 <span className="font-display text-sm text-muted-foreground">Total ({totalItems} items)</span>
-                <span className="font-body text-base font-medium text-foreground font-sans">${totalPrice}</span>
+                <span className="font-body text-base font-medium text-foreground font-sans"><span className="font-sans">$</span>{totalPrice}</span>
               </div>
             </div>
 
@@ -297,7 +297,7 @@ const Checkout = () => {
             <div className="flex justify-between items-center mb-6">
               <span className="font-display text-lg text-foreground">Total</span>
               <span className="font-body text-xl font-semibold text-foreground">
-                ${totalPrice.toFixed(2)}
+                <span className="font-sans">$</span>{totalPrice.toFixed(2)}
               </span>
             </div>
 
@@ -315,7 +315,7 @@ const Checkout = () => {
               <div className="text-center space-y-2">
                 <p className="font-display text-lg text-foreground">Amount to send</p>
                 <p className="font-body text-3xl font-semibold text-foreground">
-                  ${totalPrice.toFixed(2)}
+                  <span className="font-sans">$</span>{totalPrice.toFixed(2)}
                 </p>
               </div>
 
