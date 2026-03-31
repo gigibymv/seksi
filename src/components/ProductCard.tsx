@@ -213,11 +213,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             setTempQuantity(Math.max(1, tempQuantity - 1));
                           }
                         }}
-                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-r border-border/50"
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="font-body text-xs font-medium flex-1 text-center text-foreground">
+                      <span className="font-body text-sm font-medium flex-1 text-center text-foreground">
                         {quantity > 0 ? quantity : tempQuantity}
                       </span>
                       <button
@@ -228,7 +228,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             setTempQuantity(tempQuantity + 1);
                           }
                         }}
-                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-l border-border/50"
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -331,11 +331,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             setTempQuantity(Math.max(1, tempQuantity - 1));
                           }
                         }}
-                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-r border-border/50"
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="font-body text-xs font-medium flex-1 text-center text-foreground">
+                      <span className="font-body text-sm font-medium flex-1 text-center text-foreground">
                         {quantity > 0 ? quantity : tempQuantity}
                       </span>
                       <button
@@ -346,7 +346,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             setTempQuantity(tempQuantity + 1);
                           }
                         }}
-                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-l border-border/50"
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
