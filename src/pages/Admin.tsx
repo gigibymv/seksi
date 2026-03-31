@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
-import { Loader2, Download, Lock } from "lucide-react";
+import { Loader2, Download, Lock, CheckCircle2, Circle, PackageCheck } from "lucide-react";
 
 interface OrderItem {
   id: string;
@@ -24,6 +24,8 @@ interface Order {
   order_items: OrderItem[];
 }
 
+type FilterStatus = "all" | "pending" | "processed";
+
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "seksi2027";
 
 const Admin = () => {
@@ -32,6 +34,9 @@ const Admin = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
+  const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
 
   // Check if already authenticated via sessionStorage
   useEffect(() => {
@@ -78,12 +83,92 @@ const Admin = () => {
     }
   };
 
+  // ── Selection helpers ───────────────────────────
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selected.size === filteredOrders.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filteredOrders.map((o) => o.id)));
+    }
+  };
+
+  // ── Status toggle ──────────────────────────────
+  const isProcessed = (order: Order) => order.status === "processed";
+
+  const toggleStatus = async (orderId: string, currentStatus: string) => {
+    const newStatus = currentStatus === "processed" ? "paid" : "processed";
+    setUpdatingIds((prev) => new Set(prev).add(orderId));
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status: newStatus })
+        .eq("id", orderId);
+      if (error) throw error;
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+      );
+    } catch (err) {
+      console.error("Error updating status:", err);
+    } finally {
+      setUpdatingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(orderId);
+        return next;
+      });
+    }
+  };
+
+  const markSelectedAsProcessed = async () => {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    setUpdatingIds(new Set(ids));
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status: "processed" })
+        .in("id", ids);
+      if (error) throw error;
+      setOrders((prev) =>
+        prev.map((o) => (ids.includes(o.id) ? { ...o, status: "processed" } : o))
+      );
+      setSelected(new Set());
+    } catch (err) {
+      console.error("Error bulk updating:", err);
+    } finally {
+      setUpdatingIds(new Set());
+    }
+  };
+
+  // ── Filter ─────────────────────────────────────
+  const filteredOrders = orders.filter((o) => {
+    if (filterStatus === "pending") return !isProcessed(o);
+    if (filterStatus === "processed") return isProcessed(o);
+    return true;
+  });
+
+  const pendingCount = orders.filter((o) => !isProcessed(o)).length;
+  const processedCount = orders.filter((o) => isProcessed(o)).length;
+
+  // ── CSV Export ─────────────────────────────────
   const exportCSV = () => {
-    if (orders.length === 0) return;
+    const ordersToExport =
+      selected.size > 0
+        ? filteredOrders.filter((o) => selected.has(o.id))
+        : filteredOrders;
+
+    if (ordersToExport.length === 0) return;
 
     const rows: string[][] = [];
 
-    // Header row
     rows.push([
       "Order Date",
       "Customer Name",
@@ -97,8 +182,7 @@ const Admin = () => {
       "Status",
     ]);
 
-    // Data rows — one row per order item
-    orders.forEach((order) => {
+    ordersToExport.forEach((order) => {
       if (order.order_items && order.order_items.length > 0) {
         order.order_items.forEach((item) => {
           rows.push([
@@ -130,14 +214,12 @@ const Admin = () => {
       }
     });
 
-    // Build CSV string
     const csvContent = rows
       .map((row) =>
         row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(",")
       )
       .join("\n");
 
-    // Download
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -153,10 +235,7 @@ const Admin = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center min-h-[80vh] px-6">
-          <form
-            onSubmit={handleLogin}
-            className="w-full max-w-sm space-y-6"
-          >
+          <form onSubmit={handleLogin} className="w-full max-w-sm space-y-6">
             <div className="text-center space-y-2">
               <div className="w-12 h-12 bg-foreground/5 rounded-full flex items-center justify-center mx-auto">
                 <Lock className="w-5 h-5 text-muted-foreground" />
@@ -168,7 +247,6 @@ const Admin = () => {
                 Enter the password to view orders
               </p>
             </div>
-
             <div>
               <input
                 type="password"
@@ -184,7 +262,6 @@ const Admin = () => {
                 </p>
               )}
             </div>
-
             <button type="submit" className="btn-primary w-full text-center">
               Enter
             </button>
@@ -199,21 +276,36 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-6 py-20 mt-10">
-        <div className="flex justify-between items-center mb-10">
+        {/* Title bar */}
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-8">
           <div>
-            <h1 className="font-display text-3xl font-medium text-foreground">Order Dashboard</h1>
+            <h1 className="font-display text-3xl font-medium text-foreground">
+              Order Dashboard
+            </h1>
             <p className="font-body text-xs text-muted-foreground mt-1">
-              {orders.length} order{orders.length !== 1 ? "s" : ""} total
+              {orders.length} order{orders.length !== 1 ? "s" : ""} total ·{" "}
+              {pendingCount} pending · {processedCount} processed
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            {selected.size > 0 && (
+              <button
+                onClick={markSelectedAsProcessed}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground font-body text-[11px] uppercase tracking-widest hover:opacity-90 transition-opacity"
+              >
+                <PackageCheck className="w-3.5 h-3.5" />
+                Mark {selected.size} as Processed
+              </button>
+            )}
             <button
               onClick={exportCSV}
-              disabled={orders.length === 0}
+              disabled={filteredOrders.length === 0}
               className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <Download className="w-4 h-4" />
-              Export CSV
+              {selected.size > 0
+                ? `Export ${selected.size} Selected`
+                : "Export All"}
             </button>
             <button
               onClick={fetchOrders}
@@ -225,31 +317,70 @@ const Admin = () => {
         </div>
 
         {/* Summary cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="border border-border p-5">
-            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Orders</p>
-            <p className="font-display text-2xl font-semibold text-foreground">{orders.length}</p>
+            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+              Orders
+            </p>
+            <p className="font-display text-2xl font-semibold text-foreground">
+              {orders.length}
+            </p>
           </div>
           <div className="border border-border p-5">
-            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Revenue</p>
+            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+              Revenue
+            </p>
             <p className="font-display text-2xl font-semibold text-foreground">
               ${orders.reduce((s, o) => s + o.total_amount, 0).toFixed(2)}
             </p>
           </div>
           <div className="border border-border p-5">
-            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Items Sold</p>
+            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+              Items Sold
+            </p>
             <p className="font-display text-2xl font-semibold text-foreground">
-              {orders.reduce((s, o) => s + (o.order_items?.reduce((si, i) => si + i.quantity, 0) || 0), 0)}
+              {orders.reduce(
+                (s, o) =>
+                  s + (o.order_items?.reduce((si, i) => si + i.quantity, 0) || 0),
+                0
+              )}
             </p>
           </div>
           <div className="border border-border p-5">
-            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Avg Order</p>
+            <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+              Pending
+            </p>
             <p className="font-display text-2xl font-semibold text-foreground">
-              ${orders.length > 0 ? (orders.reduce((s, o) => s + o.total_amount, 0) / orders.length).toFixed(2) : "0.00"}
+              {pendingCount}
             </p>
           </div>
         </div>
 
+        {/* Filter tabs */}
+        <div className="flex items-center gap-2 mb-6">
+          {(["all", "pending", "processed"] as FilterStatus[]).map((f) => (
+            <button
+              key={f}
+              onClick={() => {
+                setFilterStatus(f);
+                setSelected(new Set());
+              }}
+              className={`px-3 py-2 text-[10px] font-body font-medium uppercase tracking-widest transition-colors ${
+                filterStatus === f
+                  ? "bg-foreground text-background"
+                  : "border border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+              }`}
+            >
+              {f === "all"
+                ? `All (${orders.length})`
+                : f === "pending"
+                ? `Pending (${pendingCount})`
+                : `Processed (${processedCount})`}
+            </button>
+          ))}
+        </div>
+
+        {/* Table */}
         {loading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -259,46 +390,130 @@ const Admin = () => {
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>
-                  <TableHead className="font-body text-[10px] uppercase tracking-widest py-4">Date</TableHead>
-                  <TableHead className="font-body text-[10px] uppercase tracking-widest">Customer</TableHead>
-                  <TableHead className="font-body text-[10px] uppercase tracking-widest">Items</TableHead>
-                  <TableHead className="font-body text-[10px] uppercase tracking-widest text-right">Total</TableHead>
-                  <TableHead className="font-body text-[10px] uppercase tracking-widest">Payment</TableHead>
+                  <TableHead className="w-10 py-4">
+                    <button
+                      onClick={toggleSelectAll}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {selected.size === filteredOrders.length &&
+                      filteredOrders.length > 0 ? (
+                        <CheckCircle2 className="w-4 h-4" />
+                      ) : (
+                        <Circle className="w-4 h-4" />
+                      )}
+                    </button>
+                  </TableHead>
+                  <TableHead className="font-body text-[10px] uppercase tracking-widest py-4">
+                    Date
+                  </TableHead>
+                  <TableHead className="font-body text-[10px] uppercase tracking-widest">
+                    Customer
+                  </TableHead>
+                  <TableHead className="font-body text-[10px] uppercase tracking-widest">
+                    Items
+                  </TableHead>
+                  <TableHead className="font-body text-[10px] uppercase tracking-widest text-right">
+                    Total
+                  </TableHead>
+                  <TableHead className="font-body text-[10px] uppercase tracking-widest">
+                    Payment
+                  </TableHead>
+                  <TableHead className="font-body text-[10px] uppercase tracking-widest text-center">
+                    Status
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id} className="hover:bg-muted/30 transition-colors">
-                    <TableCell className="font-body text-xs text-muted-foreground">
-                      {format(new Date(order.created_at), "MMM d, HH:mm")}
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <p className="font-body text-sm text-foreground font-medium">{order.customer_name}</p>
-                        <p className="font-body text-[11px] text-muted-foreground">{order.customer_email}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1 py-2">
-                        {order.order_items?.map((item) => (
-                          <p key={item.id} className="font-body text-[11px] text-muted-foreground leading-relaxed">
-                            {item.quantity}× {item.product_name} — ${item.unit_price}
+                {filteredOrders.map((order) => {
+                  const processed = isProcessed(order);
+                  const isUpdating = updatingIds.has(order.id);
+                  return (
+                    <TableRow
+                      key={order.id}
+                      className={`transition-colors ${
+                        processed
+                          ? "bg-muted/20 opacity-60"
+                          : "hover:bg-muted/30"
+                      } ${selected.has(order.id) ? "bg-primary/5" : ""}`}
+                    >
+                      {/* Checkbox */}
+                      <TableCell>
+                        <button
+                          onClick={() => toggleSelect(order.id)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {selected.has(order.id) ? (
+                            <CheckCircle2 className="w-4 h-4 text-foreground" />
+                          ) : (
+                            <Circle className="w-4 h-4" />
+                          )}
+                        </button>
+                      </TableCell>
+                      <TableCell className="font-body text-xs text-muted-foreground">
+                        {format(new Date(order.created_at), "MMM d, HH:mm")}
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <p className="font-body text-sm text-foreground font-medium">
+                            {order.customer_name}
                           </p>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-body text-sm text-foreground font-semibold text-right">
-                      ${order.total_amount.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
-                      {order.payment_method}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {orders.length === 0 && (
+                          <p className="font-body text-[11px] text-muted-foreground">
+                            {order.customer_email}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1 py-2">
+                          {order.order_items?.map((item) => (
+                            <p
+                              key={item.id}
+                              className="font-body text-[11px] text-muted-foreground leading-relaxed"
+                            >
+                              {item.quantity}× {item.product_name} — $
+                              {item.unit_price}
+                            </p>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-body text-sm text-foreground font-semibold text-right">
+                        ${order.total_amount.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {order.payment_method}
+                      </TableCell>
+                      {/* Status toggle */}
+                      <TableCell className="text-center">
+                        <button
+                          onClick={() => toggleStatus(order.id, order.status)}
+                          disabled={isUpdating}
+                          className="transition-all hover:scale-110 disabled:opacity-50"
+                          title={
+                            processed
+                              ? "Click to mark as pending"
+                              : "Click to mark as processed"
+                          }
+                        >
+                          {isUpdating ? (
+                            <Loader2 className="w-5 h-5 animate-spin text-muted-foreground mx-auto" />
+                          ) : processed ? (
+                            <CheckCircle2 className="w-5 h-5 text-secondary mx-auto" />
+                          ) : (
+                            <Circle className="w-5 h-5 text-muted-foreground/40 mx-auto" />
+                          )}
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {filteredOrders.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-20 font-body text-sm text-muted-foreground">
-                      No orders found yet.
+                    <TableCell
+                      colSpan={7}
+                      className="text-center py-20 font-body text-sm text-muted-foreground"
+                    >
+                      {filterStatus === "all"
+                        ? "No orders found yet."
+                        : `No ${filterStatus} orders.`}
                     </TableCell>
                   </TableRow>
                 )}
