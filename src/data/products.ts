@@ -40,7 +40,7 @@ export const products: Product[] = [
   // ── Hats ────────────────────────────────────────
   {
     id: "nine-cap-black-red",
-    name: 'The Nine Cap — "Noire" & "Rouge"',
+    name: 'The Nine Cap — "Black" & "Red"',
     price: 30,
     category: "cap",
     image: hatBlackRed,
@@ -53,7 +53,7 @@ export const products: Product[] = [
   },
   {
     id: "nine-cap-green-blue",
-    name: 'The Nine Cap — "Verte" & "Bleue"',
+    name: 'The Nine Cap — "Green" & "Blue"',
     price: 30,
     category: "cap",
     image: hatGreenBlue,
@@ -66,7 +66,7 @@ export const products: Product[] = [
   },
   {
     id: "nine-cap-yellow-pink",
-    name: 'The Nine Cap — "Jaune" & "Rose"',
+    name: 'The Nine Cap — "Yellow" & "Pink"',
     price: 30,
     category: "cap",
     image: hatYellowPink,
@@ -79,14 +79,14 @@ export const products: Product[] = [
   },
   {
     id: "nine-cap-jean-brown",
-    name: 'The Nine Cap — "Jean" & "Marron"',
+    name: 'The Nine Cap — "Jean" & "Brown"',
     price: 30,
     category: "cap",
     image: hatJeanBrown,
     description: "",
     variants: [
       { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown },
-      { id: "cap-brown", label: "Marron", color: "#7a4e2d", image: hatJeanBrown },
+      { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
     ],
     sizes: ["One Size"],
   },
@@ -94,7 +94,7 @@ export const products: Product[] = [
   // ── T-Shirts ────────────────────────────────────
   {
     id: "c27-tshirt-black",
-    name: 'The Nine T-shirt - "Noir"',
+    name: 'The Nine T-shirt - "Black"',
     price: 40,
     category: "tshirt",
     image: tshirtBlackFront,
@@ -104,7 +104,7 @@ export const products: Product[] = [
   },
   {
     id: "c27-tshirt-white",
-    name: 'The Nine T-shirt - "Blanc"',
+    name: 'The Nine T-shirt - "White"',
     price: 40,
     category: "tshirt",
     image: tshirtWhiteFront,
