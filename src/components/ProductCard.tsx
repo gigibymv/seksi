@@ -36,7 +36,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const isDisabled = isSoldOut || isSizeUnavailable || isComingSoon;
 
   return (
-    <div className="group relative bg-card">
+    <div className="group relative bg-card flex flex-col h-full">
       {/* Image */}
       <div
         className="aspect-[3/4] overflow-hidden relative cursor-pointer"
@@ -79,7 +79,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       {/* Info */}
-      <div className="px-4 pt-4 pb-5 space-y-3">
+      <div className="px-4 pt-4 pb-5 flex flex-col flex-grow space-y-3">
         {/* Name + Price row */}
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-display text-sm md:text-base font-medium text-foreground leading-snug">
@@ -159,50 +159,52 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Add to Cart / Quantity */}
-        {isSoldOut || isComingSoon ? (
-          <button
-            disabled
-            className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-muted text-muted-foreground cursor-not-allowed"
-          >
-            {isSoldOut ? "Sold Out" : "Coming Soon"}
-          </button>
-        ) : quantity === 0 ? (
-          <button
-            onClick={() => !isDisabled && addToCart(product, selectedSize)}
-            disabled={isDisabled}
-            className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
-          >
-            Add to Cart
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center border border-border">
-              <button
-                onClick={() =>
-                  quantity === 1
-                    ? removeFromCart(product.id, selectedSize)
-                    : updateQuantity(product.id, selectedSize, quantity - 1)
-                }
-                className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
-              >
-                <Minus className="w-3.5 h-3.5" />
-              </button>
-              <span className="font-body text-sm font-medium w-8 text-center">
-                {quantity}
+        <div className="mt-auto pt-1">
+          {isSoldOut || isComingSoon ? (
+            <button
+              disabled
+              className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-muted text-muted-foreground cursor-not-allowed"
+            >
+              {isSoldOut ? "Sold Out" : "Coming Soon"}
+            </button>
+          ) : quantity === 0 ? (
+            <button
+              onClick={() => !isDisabled && addToCart(product, selectedSize)}
+              disabled={isDisabled}
+              className="w-full py-3 font-body text-[11px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+            >
+              Add to Cart
+            </button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center border border-border">
+                <button
+                  onClick={() =>
+                    quantity === 1
+                      ? removeFromCart(product.id, selectedSize)
+                      : updateQuantity(product.id, selectedSize, quantity - 1)
+                  }
+                  className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="font-body text-sm font-medium w-8 text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => updateQuantity(product.id, selectedSize, quantity + 1)}
+                  className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <span className="flex items-center gap-1 font-body text-[11px] text-muted-foreground">
+                <Check className="w-3.5 h-3.5" />
+                In cart
               </span>
-              <button
-                onClick={() => updateQuantity(product.id, selectedSize, quantity + 1)}
-                className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" />
-              </button>
             </div>
-            <span className="flex items-center gap-1 font-body text-[11px] text-muted-foreground">
-              <Check className="w-3.5 h-3.5" />
-              In cart
-            </span>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
