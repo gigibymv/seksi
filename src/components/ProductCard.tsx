@@ -199,77 +199,75 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
               {/* Action Row */}
               <div className="w-full h-9">
-                {quantity > 0 ? (
-                  // State 3: Already in Cart - Standard Stepper
-                  <div className="flex items-center border border-border bg-card h-full w-full">
-                    <button
-                      onClick={() =>
-                        quantity === 1
-                          ? removeFromCart(product.id, selectedSize, activeVariant?.label)
-                          : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
-                      }
-                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="font-body text-sm font-medium w-10 text-center text-foreground border-x border-border/50 h-full flex items-center justify-center">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ) : isAddingMode ? (
-                  // State 2: Selection Mode - Stepper + ADD Button
+                {isAddingMode ? (
+                  // State 2 & 3: Selection/Editing Mode
                   <div className="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300 h-full w-full">
                     <div className="flex items-center border border-border bg-card h-9 flex-[0.7]">
                       <button
-                        onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
+                        onClick={() => {
+                          if (quantity > 0) {
+                            quantity === 1
+                              ? removeFromCart(product.id, selectedSize, activeVariant?.label)
+                              : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label);
+                          } else {
+                            setTempQuantity(Math.max(1, tempQuantity - 1));
+                          }
+                        }}
                         className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-r border-border/50"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <span className="font-body text-xs font-medium flex-1 text-center text-foreground">
-                        {tempQuantity}
+                        {quantity > 0 ? quantity : tempQuantity}
                       </span>
                       <button
-                        onClick={() => setTempQuantity(tempQuantity + 1)}
+                        onClick={() => {
+                          if (quantity > 0) {
+                            updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label);
+                          } else {
+                            setTempQuantity(tempQuantity + 1);
+                          }
+                        }}
                         className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-l border-border/50"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
-                        setIsAddingMode(false);
-                        setTempQuantity(1);
-                        setIsCartOpen(true);
-                      }}
-                      className="bg-foreground text-background h-9 px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
-                    >
-                      Add
-                    </button>
+                    {quantity === 0 && (
+                      <button
+                        onClick={() => {
+                          addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
+                          setIsAddingMode(false);
+                          setTempQuantity(1);
+                          setIsCartOpen(true);
+                        }}
+                        className="bg-foreground text-background h-9 px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
+                      >
+                        Add
+                      </button>
+                    )}
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className="p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0"
+                      className={`p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0 ${quantity > 0 ? "ml-auto" : ""}`}
                     >
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  // State 1: Default - Icon Only (No Text)
+                  // State 1: Default - Icon with optional Badge
                   <div className="flex justify-center">
                     <button
                       onClick={() => !isDisabled && setIsAddingMode(true)}
                       disabled={isDisabled}
-                      className="p-2 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                      className="p-2 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40 relative group"
                       aria-label="Add to Cart"
                     >
                       <ShoppingBag className="w-5 h-5" />
+                      {quantity > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 bg-foreground text-background text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-background shadow-sm animate-in zoom-in duration-300">
+                          {quantity}
+                        </span>
+                      )}
                     </button>
                   </div>
                 )}
@@ -319,62 +317,56 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
               {/* Action Area */}
               <div className="w-full h-9">
-                {isSoldOut || isComingSoon ? null : quantity > 0 ? (
-                  <div className="flex items-center border border-border bg-card h-full w-full">
-                    <button
-                      onClick={() =>
-                        quantity === 1
-                          ? removeFromCart(product.id, selectedSize, activeVariant?.label)
-                          : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
-                      }
-                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="font-body text-sm font-medium w-10 text-center text-foreground border-x border-border/50 h-full flex items-center justify-center">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ) : isAddingMode ? (
-                  // State 2: Selection Mode - Cohesive Action Bar
+                {isAddingMode ? (
+                  // Selection/Editing Mode
                   <div className="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300 h-full w-full">
                     <div className="flex items-center border border-border bg-card h-full flex-[0.7]">
                       <button
-                        onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
+                        onClick={() => {
+                          if (quantity > 0) {
+                            quantity === 1
+                              ? removeFromCart(product.id, selectedSize, activeVariant?.label)
+                              : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label);
+                          } else {
+                            setTempQuantity(Math.max(1, tempQuantity - 1));
+                          }
+                        }}
                         className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-r border-border/50"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <span className="font-body text-xs font-medium flex-1 text-center text-foreground">
-                        {tempQuantity}
+                        {quantity > 0 ? quantity : tempQuantity}
                       </span>
                       <button
-                        onClick={() => setTempQuantity(tempQuantity + 1)}
+                        onClick={() => {
+                          if (quantity > 0) {
+                            updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label);
+                          } else {
+                            setTempQuantity(tempQuantity + 1);
+                          }
+                        }}
                         className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-l border-border/50"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
-                        setIsAddingMode(false);
-                        setTempQuantity(1);
-                        setIsCartOpen(true);
-                      }}
-                      className="bg-foreground text-background h-full px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
-                    >
-                      Add
-                    </button>
+                    {quantity === 0 && (
+                      <button
+                        onClick={() => {
+                          addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
+                          setIsAddingMode(false);
+                          setTempQuantity(1);
+                          setIsCartOpen(true);
+                        }}
+                        className="bg-foreground text-background h-full px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
+                      >
+                        Add
+                      </button>
+                    )}
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className="p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0"
+                      className={`p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0 ${quantity > 0 ? "ml-auto" : ""}`}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -384,10 +376,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     <button
                       onClick={() => !isDisabled && setIsAddingMode(true)}
                       disabled={isDisabled}
-                      className="p-2 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                      className="p-2 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40 relative group"
                       aria-label="Add to Cart"
                     >
                       <ShoppingBag className="w-5 h-5" />
+                      {quantity > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 bg-foreground text-background text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-background shadow-sm animate-in zoom-in duration-300">
+                          {quantity}
+                        </span>
+                      )}
                     </button>
                   </div>
                 )}
