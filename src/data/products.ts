@@ -44,7 +44,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatBlackRed,
-    description: "",
+    description: "100% Cotton",
     variants: [
       { id: "cap-black", label: "Black", color: "#1a1a1a", image: hatBlackRed },
       { id: "cap-red", label: "Red", color: "#e31b23", image: hatBlackRed },
@@ -57,7 +57,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatVertBleu,
-    description: "",
+    description: "100% Cotton",
     variants: [
       { id: "cap-green", label: "Green", color: "#1e7a3c", image: hatVertBleu },
       { id: "cap-blue", label: "Blue", color: "#2c5fa8", image: hatVertBleu },
@@ -70,7 +70,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatYellowPink,
-    description: "",
+    description: "100% Cotton",
     variants: [
       { id: "cap-yellow", label: "Yellow", color: "#e6c84c", image: hatYellowPink },
       { id: "cap-pink", label: "Pink", color: "#d4829e", image: hatYellowPink },
@@ -83,7 +83,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatJeanBrown,
-    description: "",
+    description: "100% Cotton",
     variants: [
       { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown },
       { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
@@ -99,7 +99,7 @@ export const products: Product[] = [
     category: "tshirt",
     image: tshirtBlackFront,
     secondaryImage: tshirtBlackBack,
-    description: "",
+    description: "100% Cotton",
     sizes: ["XS", "S", "M", "L", "XL", "XXL"],
   },
   {
@@ -109,7 +109,7 @@ export const products: Product[] = [
     category: "tshirt",
     image: tshirtWhiteFront,
     secondaryImage: tshirtWhiteBack,
-    description: "",
+    description: "100% Cotton",
     sizes: ["XS", "S", "M", "L", "XL", "XXL"],
   },
 
