@@ -6,6 +6,7 @@ import hatJeanBrown from "@/assets/hat-jean-brown.png";
 import lookbook1 from "@/assets/lookbook-1.png";
 import lookbook2 from "@/assets/lookbook-2.png";
 import lookbook3 from "@/assets/lookbook-3.png";
+import lookbook4 from "@/assets/lookbook-4.png";
 import {
   Carousel,
   CarouselContent,
@@ -19,6 +20,7 @@ const images = [
   { src: lookbook1, alt: "Editorial Look 1" },
   { src: lookbook2, alt: "Editorial Look 2" },
   { src: lookbook3, alt: "Editorial Look 3" },
+  { src: lookbook4, alt: "Editorial Look 4" },
   { src: hatBlackRed, alt: "The Nine Cap — Black & Red" },
   { src: hatGreenBlue, alt: "The Nine Cap — Green & Blue" },
   { src: hatYellowPink, alt: "The Nine Cap — Yellow & Pink" },
