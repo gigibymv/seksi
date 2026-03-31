@@ -129,3 +129,14 @@
   animation: marquee 30s linear infinite;
   will-change: transform;
 }
+
+/* Hide platform-injected Lovable badge */
+[data-lovable-badge],
+#lovable-badge,
+a[href*="lovable.dev"],
+a[href*="gptengineer.app"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
