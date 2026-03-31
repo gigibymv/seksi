@@ -61,7 +61,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <div className="group relative bg-card flex flex-col h-full">
       {/* Image */}
       {/* Image */}
-      <div className="aspect-[3/4] overflow-hidden relative group/img bg-muted bg-opacity-20 z-0">
+      <div className="aspect-[3/4] overflow-hidden relative group/img bg-muted/20 z-0 w-full">
         {images.length > 1 ? (
           <Carousel setApi={setApi} opts={{ loop: true }} className="absolute inset-0 w-full h-full [&>div]:h-full">
             <CarouselContent className="h-full ml-0">
@@ -91,7 +91,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <img
             src={currentImage}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03] cursor-pointer"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03] cursor-pointer"
             onClick={() => setIsModalOpen(true)}
             loading="lazy"
           />
@@ -125,27 +125,27 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
       </div>
 
-      {/* Info */}
-      <div className="px-4 pt-4 pb-5 flex flex-col flex-grow space-y-3">
+      {/* Info Container */}
+      <div className="px-4 pt-5 pb-6 flex flex-col">
         {/* Name + Price row */}
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display text-sm md:text-base font-medium text-foreground leading-snug">
+        <div className="flex items-start justify-between gap-2 mb-4">
+          <h3 className="font-display text-base md:text-lg font-medium text-foreground leading-snug">
             {product.name}
           </h3>
-          <span className="font-body text-sm font-semibold text-foreground whitespace-nowrap">
+          <span className="font-body text-base font-semibold text-foreground whitespace-nowrap">
             ${product.price}
           </span>
         </div>
 
         {product.description && (
-          <p className="font-body text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
+          <p className="font-body text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-4">
             {product.description}
           </p>
         )}
 
         {/* Sizes */}
         {!isSoldOut && !isComingSoon && showSizes && (
-          <div className="space-y-1.5">
+          <div className="mb-6">
             <div className="flex items-center gap-1.5 flex-wrap">
               {availableSizes.map((size) => {
                 const unavailable = product.unavailableSizes?.includes(size);
@@ -154,7 +154,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     key={size}
                     onClick={() => !unavailable && setSelectedSize(size as Size)}
                     disabled={unavailable}
-                    className={`min-w-[36px] h-9 px-2 text-[11px] font-body font-medium border transition-colors ${
+                    className={`min-w-[40px] h-10 px-2 text-[11px] font-body font-medium border transition-colors ${
                       unavailable
                         ? "border-border/50 text-muted-foreground/30 cursor-not-allowed line-through"
                         : selectedSize === size
@@ -171,18 +171,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Bottom Action Row: Variants & Add to Cart */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          {/* Variants */}
-          {product.variants && product.variants.length > 1 ? (
-            <div className="flex items-center gap-2">
+        {/* Action Button Section */}
+        <div className="space-y-4">
+          {/* Variants row if multi-variant */}
+          {product.variants && product.variants.length > 1 && (
+            <div className="flex items-center gap-2 mb-4">
               {product.variants.map((v) =>
                 v.color ? (
                   <button
                     key={v.id}
                     onClick={() => setActiveVariant(v)}
                     title={v.label}
-                    className={`w-4 h-4 rounded-full transition-all ${
+                    className={`w-5 h-5 rounded-full transition-all ${
                       activeVariant?.id === v.id
                         ? "ring-1 ring-offset-2 ring-foreground scale-110"
                         : "hover:scale-110 opacity-80"
@@ -193,7 +193,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   <button
                     key={v.id}
                     onClick={() => setActiveVariant(v)}
-                    className={`px-2 py-1 text-[10px] font-body border transition-colors ${
+                    className={`px-3 py-1.5 text-[10px] font-body border transition-colors ${
                       activeVariant?.id === v.id
                         ? "border-foreground text-foreground"
                         : "border-border text-muted-foreground hover:border-foreground/50"
@@ -204,16 +204,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 )
               )}
             </div>
-          ) : (
-            <div />
           )}
 
-          {/* Add to Cart / Quantity */}
-          <div className="shrink-0 flex items-center justify-end">
+          {/* Large integrated Action Button */}
+          <div>
             {isSoldOut || isComingSoon ? (
               <button
                 disabled
-                className="px-4 py-2.5 font-body text-[10px] uppercase tracking-widest bg-muted text-muted-foreground cursor-not-allowed"
+                className="w-full h-12 flex items-center justify-center font-body text-[11px] uppercase tracking-[0.2em] bg-muted/50 text-muted-foreground cursor-not-allowed"
               >
                 {isSoldOut ? "Sold Out" : "Coming Soon"}
               </button>
@@ -221,34 +219,31 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <button
                 onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
                 disabled={isDisabled}
-                className="p-2.5 font-body text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
-                aria-label="Add to Cart"
+                className="w-full h-12 flex items-center justify-center font-body text-[11px] uppercase tracking-[0.2em] bg-foreground text-background hover:bg-foreground/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
               >
-                <ShoppingBag className="w-4 h-4" />
+                Add to Bag
               </button>
             ) : (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border border-border">
-                  <button
-                    onClick={() =>
-                      quantity === 1
-                        ? removeFromCart(product.id, selectedSize, activeVariant?.label)
-                        : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
-                    }
-                    className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="font-body text-xs font-medium w-6 text-center">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
+              <div className="flex items-center w-full h-12 border border-foreground/10 bg-muted/10">
+                <button
+                  onClick={() =>
+                    quantity === 1
+                      ? removeFromCart(product.id, selectedSize, activeVariant?.label)
+                      : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
+                  }
+                  className="w-12 h-full flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <div className="flex-1 flex items-center justify-center font-body text-sm font-medium">
+                  {quantity} in Bag
                 </div>
+                <button
+                  onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
+                  className="w-12 h-full flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
               </div>
             )}
           </div>
