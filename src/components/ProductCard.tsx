@@ -169,10 +169,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Sizes & Actions Combined Row */}
         <div className="mt-4">
           {!isSoldOut && !isComingSoon && showSizes ? (
-            <div className={`flex ${isAddingMode ? "flex-col sm:flex-row" : "flex-row items-center"} justify-between gap-3 sm:gap-4 w-full`}>
-              <div className={`${isAddingMode ? "w-full" : "flex-1"} min-w-0 font-body`}>
+            <div className="flex flex-col gap-3 w-full">
+              {/* Context Row: Size Selector */}
+              <div className="w-full font-body">
                 <Select value={selectedSize} onValueChange={(value) => setSelectedSize(value as Size)}>
-                  <SelectTrigger className="w-full font-body text-[9px] md:text-[10px] uppercase tracking-[0.15em] border-border bg-card h-8 px-2.5 hover:border-foreground transition-colors focus:ring-0 focus:ring-offset-0 rounded-none">
+                  <SelectTrigger className="w-full font-body text-[9px] md:text-[10px] uppercase tracking-[0.15em] border-border bg-card h-9 px-2.5 hover:border-foreground transition-colors focus:ring-0 focus:ring-offset-0 rounded-none">
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground/60 text-[8px] uppercase tracking-wider">Size:</span>
                       <SelectValue placeholder="Select" />
@@ -196,36 +197,38 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 </Select>
               </div>
 
-              <div className={`${isAddingMode ? "w-full" : "shrink-0"}`}>
+              {/* Action Row */}
+              <div className="w-full h-9">
                 {quantity > 0 ? (
                   // State 3: Already in Cart - Standard Stepper
-                  <div className="flex items-center border border-border bg-card">
+                  <div className="flex items-center border border-border bg-card h-full w-full">
                     <button
                       onClick={() =>
                         quantity === 1
                           ? removeFromCart(product.id, selectedSize, activeVariant?.label)
                           : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
                       }
-                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                     >
-                      <Minus className="w-3 h-3" />
+                      <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                    <span className="font-body text-sm font-medium w-10 text-center text-foreground border-x border-border/50 h-full flex items-center justify-center">
                       {quantity}
                     </span>
                     <button
                       onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                     >
-                      <Plus className="w-3 h-3" />
+                      <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ) : isAddingMode ? (
-                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300 w-full">
-                    <div className="flex items-center border border-border bg-card flex-1">
+                  // State 2: Selection Mode - Stepper + ADD Button
+                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300 h-full w-full">
+                    <div className="flex items-center border border-border bg-card h-9 flex-[0.7]">
                       <button
                         onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-r border-border/50"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
@@ -234,7 +237,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                       </span>
                       <button
                         onClick={() => setTempQuantity(tempQuantity + 1)}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-l border-border/50"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -246,141 +249,147 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         setTempQuantity(1);
                         setIsCartOpen(true);
                       }}
-                      className="bg-foreground text-background whitespace-nowrap px-4 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors flex-1"
+                      className="bg-foreground text-background h-9 px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
                     >
                       Add
                     </button>
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className="p-1 text-muted-foreground hover:text-foreground shrink-0"
+                      className="p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
                   // State 1: Default - Icon Only (No Text)
-                  <button
-                    onClick={() => !isDisabled && setIsAddingMode(true)}
-                    disabled={isDisabled}
-                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
-                    aria-label="Add to Cart"
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                  </button>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => !isDisabled && setIsAddingMode(true)}
+                      disabled={isDisabled}
+                      className="p-2 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                      aria-label="Add to Cart"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
           ) : (
             /* Cap / Standard layout for items without sizes */
-            <div className="w-full flex items-center justify-between">
-              {/* Variants row if multi-variant */}
-              <div className="flex items-center gap-2">
-                {product.variants && product.variants.length > 0 && product.variants.map((v) =>
-                  v.color ? (
-                    <button
-                      key={v.id}
-                      onClick={() => setActiveVariant(v)}
-                      title={v.label}
-                      className={`w-4 h-4 rounded-full transition-all ${
-                        activeVariant?.id === v.id
-                          ? "ring-1 ring-offset-2 ring-foreground scale-110"
-                          : "hover:scale-110 opacity-80"
-                      }`}
-                      style={{ backgroundColor: v.color }}
-                    />
-                  ) : (
-                    <button
-                      key={v.id}
-                      onClick={() => setActiveVariant(v)}
-                      className={`px-2 py-1 text-[10px] font-body border transition-colors ${
-                        activeVariant?.id === v.id
-                          ? "border-foreground text-foreground"
-                          : "border-border text-muted-foreground hover:border-foreground/50"
-                      }`}
-                    >
-                      {v.label}
-                    </button>
-                  )
-                )}
-              </div>
+            <div className="flex flex-col gap-3.5 w-full">
+              {/* Context Row: Variants or Status */}
+              <div className="flex items-center justify-between min-h-8">
+                <div className="flex items-center gap-2">
+                  {product.variants && product.variants.length > 0 && product.variants.map((v) =>
+                    v.color ? (
+                      <button
+                        key={v.id}
+                        onClick={() => setActiveVariant(v)}
+                        title={v.label}
+                        className={`w-4 h-4 rounded-full transition-all ${
+                          activeVariant?.id === v.id
+                            ? "ring-1 ring-offset-2 ring-foreground scale-110"
+                            : "hover:scale-110 opacity-80"
+                        }`}
+                        style={{ backgroundColor: v.color }}
+                      />
+                    ) : (
+                      <button
+                        key={v.id}
+                        onClick={() => setActiveVariant(v)}
+                        className={`px-2 py-1 text-[10px] font-body border transition-colors ${
+                          activeVariant?.id === v.id
+                            ? "border-foreground text-foreground"
+                            : "border-border text-muted-foreground hover:border-foreground/50"
+                        }`}
+                      >
+                        {v.label}
+                      </button>
+                    )
+                  )}
+                </div>
 
-              {/* Icon-only Add to Cart / Quantity */}
-              <div className="shrink-0">
-                {isSoldOut || isComingSoon ? (
+                {(isSoldOut || isComingSoon) && (
                   <span className="text-[10px] font-body uppercase tracking-widest text-muted-foreground bg-muted/30 px-2 py-1">
                     {isSoldOut ? "Sold Out" : "Soon"}
                   </span>
-                ) : quantity > 0 ? (
-                  <div className="flex items-center border border-border bg-card">
+                )}
+              </div>
+
+              {/* Action Area */}
+              <div className="w-full h-9">
+                {isSoldOut || isComingSoon ? null : quantity > 0 ? (
+                  <div className="flex items-center border border-border bg-card h-full w-full">
                     <button
                       onClick={() =>
                         quantity === 1
                           ? removeFromCart(product.id, selectedSize, activeVariant?.label)
                           : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
                       }
-                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                     >
-                      <Minus className="w-3 h-3" />
+                      <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                    <span className="font-body text-sm font-medium w-10 text-center text-foreground border-x border-border/50 h-full flex items-center justify-center">
                       {quantity}
                     </span>
                     <button
                       onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                      className="flex-1 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                     >
-                      <Plus className="w-3 h-3" />
+                      <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ) : isAddingMode ? (
-                  // State 2: Selection Mode - Stepper + ADD Button for non-size items
-                  <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-right-2 duration-300 w-full">
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center border border-border bg-card flex-1">
-                        <button
-                          onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
-                          className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="font-body text-xs font-medium flex-1 text-center text-foreground">
-                          {tempQuantity}
-                        </span>
-                        <button
-                          onClick={() => setTempQuantity(tempQuantity + 1)}
-                          className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
+                  // State 2: Selection Mode - Cohesive Action Bar
+                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300 h-full w-full">
+                    <div className="flex items-center border border-border bg-card h-full flex-[0.7]">
                       <button
-                        onClick={() => {
-                          addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
-                          setIsAddingMode(false);
-                          setTempQuantity(1);
-                          setIsCartOpen(true);
-                        }}
-                        className="bg-foreground text-background whitespace-nowrap px-4 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors flex-1"
+                        onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-r border-border/50"
                       >
-                        Add
+                        <Minus className="w-3 h-3" />
                       </button>
-                      <button 
-                        onClick={() => setIsAddingMode(false)}
-                        className="p-1 text-muted-foreground hover:text-foreground shrink-0"
+                      <span className="font-body text-xs font-medium flex-1 text-center text-foreground">
+                        {tempQuantity}
+                      </span>
+                      <button
+                        onClick={() => setTempQuantity(tempQuantity + 1)}
+                        className="w-9 h-full flex items-center justify-center hover:bg-muted transition-colors text-foreground border-l border-border/50"
                       >
-                        <X className="w-3 h-3" />
+                        <Plus className="w-3 h-3" />
                       </button>
                     </div>
+                    <button
+                      onClick={() => {
+                        addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
+                        setIsAddingMode(false);
+                        setTempQuantity(1);
+                        setIsCartOpen(true);
+                      }}
+                      className="bg-foreground text-background h-full px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
+                    >
+                      Add
+                    </button>
+                    <button 
+                      onClick={() => setIsAddingMode(false)}
+                      className="p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors shrink-0"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => !isDisabled && setIsAddingMode(true)}
-                    disabled={isDisabled}
-                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
-                    aria-label="Add to Cart"
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                  </button>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => !isDisabled && setIsAddingMode(true)}
+                      disabled={isDisabled}
+                      className="p-2 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                      aria-label="Add to Cart"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
