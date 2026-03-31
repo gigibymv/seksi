@@ -222,7 +222,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <div className="w-full flex items-center justify-between">
               {/* Variants row if multi-variant */}
               <div className="flex items-center gap-2">
-                {product.variants && product.variants.length > 1 && product.variants.map((v) =>
+                {product.variants && product.variants.length > 0 && product.variants.map((v) =>
                   v.color ? (
                     <button
                       key={v.id}
