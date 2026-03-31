@@ -51,10 +51,10 @@ const Cart = () => {
             if (product.category === "cap") {
               displayName = "Cap";
             } else if (product.category === "tshirt") {
-              if (product.name.includes('"Black"')) {
+              if (product.name.includes('"Noir"')) {
                 displayName = "The Nine T-shirt";
                 displayColor = "Black";
-              } else if (product.name.includes('"White"')) {
+              } else if (product.name.includes('"Blanc"')) {
                 displayName = "The Nine T-shirt";
                 displayColor = "White";
               }

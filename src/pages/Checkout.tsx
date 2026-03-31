@@ -165,10 +165,10 @@ const Checkout = () => {
                   if (item.product.category === "cap") {
                     displayName = "Cap";
                   } else if (item.product.category === "tshirt") {
-                    if (item.product.name.includes('"Black"')) {
+                    if (item.product.name.includes('"Noir"')) {
                       displayName = "The Nine T-shirt";
                       displayColor = "Black";
-                    } else if (item.product.name.includes('"White"')) {
+                    } else if (item.product.name.includes('"Blanc"')) {
                       displayName = "The Nine T-shirt";
                       displayColor = "White";
                     }
