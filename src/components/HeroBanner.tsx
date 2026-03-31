@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Marquee from "./Marquee";
-import capStyled from "@/assets/cap-styled.png";
-import jacketStyled from "@/assets/jacket-styled.png";
-import vestStyled from "@/assets/vest-styled.png";
-import jacketProduct from "@/assets/jacket-product.png";
+import banner1 from "@/assets/hero-banner-1.png";
+import banner2 from "@/assets/hero-banner-2.png";
+import banner3 from "@/assets/hero-banner-3.png";
 
-const slides = [jacketStyled, capStyled, vestStyled, jacketProduct];
+const slides = [banner1, banner2, banner3];
 
 const HeroBanner = () => {
   const [current, setCurrent] = useState(0);

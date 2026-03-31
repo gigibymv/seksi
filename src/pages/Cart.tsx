@@ -44,20 +44,25 @@ const Cart = () => {
             const variantImage = variantLabel 
               ? product.variants?.find(v => v.label === variantLabel)?.image 
               : null;
+              
+            let displayName = product.name;
+            if (product.category === "cap") displayName = "Hat";
+            if (product.category === "tshirt") displayName = "T-shirt";
+            if (variantLabel) displayName += ` — "${variantLabel}"`;
 
             return (
               <div key={`${product.id}-${size}-${variantLabel || 'base'}`} className="flex items-center gap-4 py-6">
-                <div className="w-20 h-24 bg-muted flex-shrink-0 overflow-hidden">
+                <div className="w-20 h-24 bg-muted flex-shrink-0 overflow-hidden relative">
                   <img
                     src={variantImage || product.image}
-                    alt={product.name}
+                    alt={displayName}
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-display text-sm font-medium text-foreground truncate">
-                    {product.name}
+                  <h3 className="font-display text-base font-medium text-foreground truncate">
+                    {displayName}
                   </h3>
                   <p className="font-body text-xs text-muted-foreground capitalize mt-0.5 space-x-2">
                     <span>{product.category}</span>
@@ -65,12 +70,6 @@ const Cart = () => {
                       <>
                         <span>·</span>
                         <span>Size {size}</span>
-                      </>
-                    )}
-                    {variantLabel && (
-                      <>
-                        <span>·</span>
-                        <span>Color: {variantLabel}</span>
                       </>
                     )}
                   </p>
