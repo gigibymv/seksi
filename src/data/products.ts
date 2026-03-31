@@ -113,7 +113,7 @@ export const products: Product[] = [
     image: tshirtBlackFront,
     secondaryImage: tshirtBlackBack,
     description: "100% Cotton",
-    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    sizes: ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"],
   },
   {
     id: "c27-tshirt-white",
@@ -123,7 +123,7 @@ export const products: Product[] = [
     image: tshirtWhiteFront,
     secondaryImage: tshirtWhiteBack,
     description: "100% Cotton",
-    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    sizes: ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"],
   },
 
   // ── Jackets (Coming Soon) ───────────────────────
