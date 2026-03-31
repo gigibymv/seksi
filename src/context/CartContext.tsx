@@ -12,7 +12,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, size: Size, variantLabel?: string) => void;
+  addToCart: (product: Product, size: Size, variantLabel?: string, quantity?: number) => void;
   removeFromCart: (productId: string, size: Size, variantLabel?: string) => void;
   updateQuantity: (productId: string, size: Size, quantity: number, variantLabel?: string) => void;
   clearCart: () => void;
@@ -36,17 +36,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem("seksi_cart", JSON.stringify(items));
   }, [items]);
 
-  const addToCart = useCallback((product: Product, size: Size, variantLabel?: string) => {
+  const addToCart = useCallback((product: Product, size: Size, variantLabel?: string, quantity: number = 1) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id && item.size === size && item.variantLabel === variantLabel);
       if (existing) {
         return prev.map((item) =>
           item.product.id === product.id && item.size === size && item.variantLabel === variantLabel
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { product, size, quantity: 1, variantLabel }];
+      return [...prev, { product, size, quantity, variantLabel }];
     });
   }, []);
 

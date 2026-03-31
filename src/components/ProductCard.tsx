@@ -37,6 +37,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const [modalStartIndex, setModalStartIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
   const [modalApi, setModalApi] = useState<CarouselApi>();
+  
+  // Two-step Add to Cart states
+  const [isAddingMode, setIsAddingMode] = useState(false);
+  const [tempQuantity, setTempQuantity] = useState(1);
 
   const currentImage = activeVariant?.image || product.image;
   const hoverImage = activeVariant?.secondaryImage || product.secondaryImage;
@@ -194,16 +198,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
               {/* T-shirt specific Bag Icon placement (at the end of sizes row) */}
               <div className="shrink-0">
-                {quantity === 0 ? (
-                  <button
-                    onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
-                    disabled={isDisabled}
-                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
-                    aria-label="Add to Cart"
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                  </button>
-                ) : (
+                {quantity > 0 ? (
+                  // State 3: Already in Cart - Standard Stepper
                   <div className="flex items-center border border-border bg-card">
                     <button
                       onClick={() =>
@@ -225,6 +221,52 @@ const ProductCard = ({ product }: ProductCardProps) => {
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
+                ) : isAddingMode ? (
+                  // State 2: Selection Mode - Stepper + ADD Button
+                  <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300">
+                    <div className="flex items-center border border-border bg-card">
+                      <button
+                        onClick={() => setTempQuantity(Math.max(1, tempQuantity - 1))}
+                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                        {tempQuantity}
+                      </span>
+                      <button
+                        onClick={() => setTempQuantity(tempQuantity + 1)}
+                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => {
+                        addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
+                        setIsAddingMode(false);
+                      }}
+                      className="bg-foreground text-background px-4 h-8 font-body text-[10px] uppercase tracking-widest hover:bg-foreground/90 transition-colors"
+                    >
+                      Add
+                    </button>
+                    <button 
+                      onClick={() => setIsAddingMode(false)}
+                      className="p-1.5 text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  // State 1: Default - Bag Icon
+                  <button
+                    onClick={() => !isDisabled && setIsAddingMode(true)}
+                    disabled={isDisabled}
+                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                    aria-label="Add to Cart"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                  </button>
                 )}
               </div>
             </div>
