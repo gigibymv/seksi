@@ -10,20 +10,24 @@ const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [step, setStep] = useState<"details" | "payment" | "confirmed">("details");
   const [paymentMethod, setPaymentMethod] = useState<"zelle" | "venmo">("zelle");
   const [form, setForm] = useState({ name: "", email: "" });
 
-  if (items.length === 0 && !confirmed) {
+  if (items.length === 0 && step !== "confirmed") {
     navigate("/cart");
     return null;
   }
 
-  const handleSubmit = async () => {
+  const handleContinueToPayment = () => {
     if (!form.name || !form.email) {
       toast.error("Please fill in your name and email");
       return;
     }
+    setStep("payment");
+  };
+
+  const handleConfirmPayment = async () => {
     setLoading(true);
     try {
       const { data: order, error: orderError } = await supabase
@@ -56,7 +60,7 @@ const Checkout = () => {
       if (itemsError) throw itemsError;
 
       clearCart();
-      setConfirmed(true);
+      setStep("confirmed");
       toast.success("Order confirmed! Thank you for your purchase.");
     } catch (error) {
       console.error("Error creating order:", error);
@@ -66,7 +70,7 @@ const Checkout = () => {
     }
   };
 
-  if (confirmed) {
+  if (step === "confirmed") {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -92,19 +96,32 @@ const Checkout = () => {
       <Header />
 
       <div className="container mx-auto px-5 pt-28 pb-16 max-w-xl">
-        <button
-          onClick={() => navigate("/cart")}
-          className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Cart
-        </button>
+        {step === "details" && (
+          <button
+            onClick={() => navigate("/cart")}
+            className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Cart
+          </button>
+        )}
+
+        {step === "payment" && (
+          <button
+            onClick={() => setStep("details")}
+            className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Details
+          </button>
+        )}
 
         <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-10">
-          Checkout
+          {step === "details" ? "Checkout" : "Payment"}
         </h1>
 
-        <div className="space-y-6">
+        {step === "details" ? (
+          <div className="space-y-6">
           {/* Full Name */}
           <div>
             <label className="font-body text-sm text-foreground block mb-2">
@@ -166,20 +183,64 @@ const Checkout = () => {
           <div className="border-t border-border pt-6">
             <div className="flex justify-between items-center mb-6">
               <span className="font-display text-lg text-foreground">Total</span>
-              <span className="font-display text-xl font-semibold text-foreground">
+              <span className="font-body text-xl font-semibold text-foreground">
                 ${totalPrice.toFixed(2)}
               </span>
             </div>
 
             <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="btn-primary w-full text-center disabled:opacity-50"
+              onClick={handleContinueToPayment}
+              className="btn-primary w-full text-center"
             >
-              {loading ? "Processing..." : "Continue to Payment"}
+              Continue to Payment
             </button>
           </div>
         </div>
+        ) : (
+          <div className="space-y-8">
+            <div className="bg-card border border-border p-6 md:p-8 space-y-6">
+              <div className="text-center space-y-2">
+                <p className="font-display text-lg text-foreground">Amount to send</p>
+                <p className="font-body text-3xl font-semibold text-foreground">
+                  ${totalPrice.toFixed(2)}
+                </p>
+              </div>
+
+              <div className="border-t border-border pt-6 text-center space-y-4">
+                {paymentMethod === "zelle" ? (
+                  <>
+                    <p className="font-body text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                      Send via Zelle
+                    </p>
+                    <p className="font-display text-xl md:text-2xl text-foreground">
+                      zelle@section-c.boutique
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-body text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                      Send via Venmo
+                    </p>
+                    <p className="font-display text-xl md:text-2xl text-foreground">
+                      @section-c-boutique
+                    </p>
+                  </>
+                )}
+                <p className="font-body text-xs text-muted-foreground mt-4">
+                  Please include your name (<strong>{form.name}</strong>) in the payment memo.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleConfirmPayment}
+              disabled={loading}
+              className="btn-primary w-full text-center disabled:opacity-50"
+            >
+              {loading ? "Processing..." : "Confirm you have sent payment"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
