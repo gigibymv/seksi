@@ -1,10 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import CartContent from "./CartContent";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { useState, useEffect } from "react";
 
 const Header = () => {
-  const { totalItems } = useCart();
+  const { totalItems, isCartOpen, setIsCartOpen } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -30,6 +38,7 @@ const Header = () => {
         <Link
           to="/"
           className={`font-display text-lg md:text-xl font-semibold tracking-[0.08em] transition-colors duration-300 ${textClass}`}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           sek-si
         </Link>
@@ -48,17 +57,28 @@ const Header = () => {
           >
             Lookbook
           </a>
-          <Link
-            to="/cart"
-            className={`relative transition-colors duration-300 hover:opacity-70 ${textClass}`}
-          >
-            <ShoppingBag className="w-5 h-5" />
-            {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </Link>
+          <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+            <SheetTrigger asChild>
+              <button
+                className={`relative transition-colors duration-300 hover:opacity-70 ${textClass}`}
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+            </SheetTrigger>
+            <SheetContent className="w-full sm:max-w-md bg-background border-l border-border p-6 flex flex-col z-[101]">
+              <SheetHeader className="mb-6">
+                <SheetTitle className="font-display text-xl uppercase tracking-[0.2em] font-medium text-foreground border-b border-border pb-4">
+                  Your Cart
+                </SheetTitle>
+              </SheetHeader>
+              <CartContent onCheckout={() => setIsCartOpen(false)} />
+            </SheetContent>
+          </Sheet>
         </nav>
       </div>
     </header>
