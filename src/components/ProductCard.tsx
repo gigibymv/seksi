@@ -12,6 +12,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { items, addToCart, updateQuantity, removeFromCart } = useCart();
 
   const availableSizes = product.sizes || ["S", "M", "L", "XL"];
+  const showSizes = availableSizes.length > 1 || availableSizes[0] !== "One Size";
   const [selectedSize, setSelectedSize] = useState<Size>(availableSizes[0] as Size);
   const [activeVariant, setActiveVariant] = useState(
     product.variants?.[0] || null
@@ -116,7 +117,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Sizes */}
-        {!isSoldOut && !isComingSoon && (
+        {!isSoldOut && !isComingSoon && showSizes && (
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5 flex-wrap">
               {availableSizes.map((size) => {
