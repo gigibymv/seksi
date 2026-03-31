@@ -24,7 +24,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const hoverImage = activeVariant?.secondaryImage || product.secondaryImage;
 
   const cartItem = items.find(
-    (item) => item.product.id === product.id && item.size === selectedSize
+    (item) => item.product.id === product.id && item.size === selectedSize && item.variantLabel === activeVariant?.label
   );
   const quantity = cartItem?.quantity || 0;
   const totalInCart = items
@@ -174,7 +174,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               </button>
             ) : quantity === 0 ? (
               <button
-                onClick={() => !isDisabled && addToCart(product, selectedSize)}
+                onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
                 disabled={isDisabled}
                 className="p-2.5 font-body text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
                 aria-label="Add to Cart"
@@ -187,8 +187,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   <button
                     onClick={() =>
                       quantity === 1
-                        ? removeFromCart(product.id, selectedSize)
-                        : updateQuantity(product.id, selectedSize, quantity - 1)
+                        ? removeFromCart(product.id, selectedSize, activeVariant?.label)
+                        : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
                     }
                     className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
                   >
@@ -198,7 +198,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => updateQuantity(product.id, selectedSize, quantity + 1)}
+                    onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
                     className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
                   >
                     <Plus className="w-3 h-3" />

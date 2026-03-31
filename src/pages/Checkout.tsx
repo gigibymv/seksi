@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Checkout = () => {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, totalItems, clearCart } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"details" | "payment" | "confirmed">("details");
@@ -45,13 +45,28 @@ const Checkout = () => {
 
       if (orderError) throw orderError;
 
-      const orderItems = items.map((item) => ({
-        order_id: order.id,
-        product_name: `${item.product.name} (${item.size})`,
-        product_category: item.product.category,
-        quantity: item.quantity,
-        unit_price: item.product.price,
-      }));
+      const orderItems = items.map((item) => {
+        let baseName = item.product.name;
+        // Generic naming for DB
+        if (item.product.category === "cap") baseName = "Hat";
+        if (item.product.category === "tshirt") baseName = "T-shirt";
+        
+        let name = baseName;
+        if (item.variantLabel && item.variantLabel.trim() !== "") {
+          name += ` — "${item.variantLabel}"`;
+        }
+        if (item.size !== "One Size") {
+          name += ` (${item.size})`;
+        }
+        
+        return {
+          order_id: order.id,
+          product_name: name,
+          product_category: item.product.category,
+          quantity: item.quantity,
+          unit_price: item.product.price,
+        };
+      });
 
       const { error: itemsError } = await supabase
         .from("order_items")
@@ -122,6 +137,48 @@ const Checkout = () => {
 
         {step === "details" ? (
           <div className="space-y-6">
+            {/* Order Summary */}
+            <div className="mb-8 p-6 bg-muted/30 border border-border">
+              <h2 className="font-display text-lg text-foreground mb-4">Order Summary</h2>
+              <div className="space-y-4">
+                {items.map((item, idx) => {
+                  const variantImage = item.variantLabel 
+                    ? item.product.variants?.find(v => v.label === item.variantLabel)?.image 
+                    : null;
+                  
+                  return (
+                    <div key={idx} className="flex gap-4 items-center">
+                      <div className="w-16 h-20 shrink-0 bg-muted/20 overflow-hidden relative">
+                        <img 
+                          src={variantImage || item.product.image} 
+                          alt={item.product.name} 
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-display text-sm text-foreground truncate">{item.product.name}</p>
+                        <p className="font-body text-[11px] text-muted-foreground mt-1 truncate">
+                          {item.variantLabel && <span className="mr-2">Color: {item.variantLabel}</span>}
+                          {item.size !== "One Size" && <span>Size: {item.size}</span>}
+                        </p>
+                        <p className="font-body text-xs font-medium text-foreground mt-1.5">
+                          {item.quantity} × <span className="font-sans">${item.product.price}</span>
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="border-t border-border mt-5 pt-4 flex justify-between items-center">
+                <span className="font-display text-sm text-muted-foreground">Total ({totalItems} items)</span>
+                <span className="font-body text-base font-medium text-foreground font-sans">${totalPrice}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-display text-lg text-foreground">Delivery Information</h3>
+            </div>
+
           {/* Full Name */}
           <div>
             <label className="font-body text-sm text-foreground block mb-2">
