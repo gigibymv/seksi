@@ -245,27 +245,29 @@ const ProductCard = ({ product }: ProductCardProps) => {
                       onClick={() => {
                         addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
                         setIsAddingMode(false);
+                        setTempQuantity(1);
                       }}
-                      className="bg-foreground text-background px-5 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors shadow-sm"
+                      className="bg-foreground text-background px-3 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
                     >
                       Add
                     </button>
                     <button 
                       onClick={() => setIsAddingMode(false)}
-                      className="p-1.5 text-muted-foreground hover:text-foreground"
+                      className="p-1 text-muted-foreground hover:text-foreground"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-3 h-3" />
                     </button>
                   </div>
                 ) : (
-                  // State 1: Default - Bag Icon
+                  // State 1: Default - Explicit Add Button
                   <button
                     onClick={() => !isDisabled && setIsAddingMode(true)}
                     disabled={isDisabled}
-                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
-                    aria-label="Add to Cart"
+                    className="flex items-center gap-2 px-3 py-2 border border-border hover:border-foreground transition-all font-body text-[10px] uppercase tracking-widest disabled:opacity-40"
+                    aria-label="Selection Mode"
                   >
-                    <ShoppingBag className="w-5 h-5" />
+                    <ShoppingBag className="w-4 h-4" />
+                    <span className="hidden sm:inline">Add</span>
                   </button>
                 )}
               </div>
