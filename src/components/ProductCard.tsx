@@ -245,7 +245,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                       }}
                       className="bg-foreground text-background h-9 px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
                     >
-                      {quantity > 0 ? "Done" : "Add"}
+                      Add
                     </button>
 
                     <button 
@@ -365,7 +365,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                       }}
                       className="bg-foreground text-background h-full px-4 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-all flex-1 shadow-sm active:scale-[0.98]"
                     >
-                      {quantity > 0 ? "Done" : "Add"}
+                      Add
                     </button>
 
                     <button 
