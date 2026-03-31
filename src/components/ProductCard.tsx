@@ -172,75 +172,71 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Action Button Section */}
-        <div className="space-y-4">
+        <div className="flex items-center justify-between mt-4">
           {/* Variants row if multi-variant */}
-          {product.variants && product.variants.length > 1 && (
-            <div className="flex items-center gap-2 mb-4">
-              {product.variants.map((v) =>
-                v.color ? (
-                  <button
-                    key={v.id}
-                    onClick={() => setActiveVariant(v)}
-                    title={v.label}
-                    className={`w-5 h-5 rounded-full transition-all ${
-                      activeVariant?.id === v.id
-                        ? "ring-1 ring-offset-2 ring-foreground scale-110"
-                        : "hover:scale-110 opacity-80"
-                    }`}
-                    style={{ backgroundColor: v.color }}
-                  />
-                ) : (
-                  <button
-                    key={v.id}
-                    onClick={() => setActiveVariant(v)}
-                    className={`px-3 py-1.5 text-[10px] font-body border transition-colors ${
-                      activeVariant?.id === v.id
-                        ? "border-foreground text-foreground"
-                        : "border-border text-muted-foreground hover:border-foreground/50"
-                    }`}
-                  >
-                    {v.label}
-                  </button>
-                )
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {product.variants && product.variants.length > 1 && product.variants.map((v) =>
+              v.color ? (
+                <button
+                  key={v.id}
+                  onClick={() => setActiveVariant(v)}
+                  title={v.label}
+                  className={`w-4 h-4 rounded-full transition-all ${
+                    activeVariant?.id === v.id
+                      ? "ring-1 ring-offset-2 ring-foreground scale-110"
+                      : "hover:scale-110 opacity-80"
+                  }`}
+                  style={{ backgroundColor: v.color }}
+                />
+              ) : (
+                <button
+                  key={v.id}
+                  onClick={() => setActiveVariant(v)}
+                  className={`px-2 py-1 text-[10px] font-body border transition-colors ${
+                    activeVariant?.id === v.id
+                      ? "border-foreground text-foreground"
+                      : "border-border text-muted-foreground hover:border-foreground/50"
+                  }`}
+                >
+                  {v.label}
+                </button>
+              )
+            )}
+          </div>
 
-          {/* Large integrated Action Button */}
-          <div>
+          {/* Icon-only Add to Cart / Quantity */}
+          <div className="shrink-0">
             {isSoldOut || isComingSoon ? (
-              <button
-                disabled
-                className="w-full h-12 flex items-center justify-center font-body text-[11px] uppercase tracking-[0.2em] bg-muted/50 text-muted-foreground cursor-not-allowed"
-              >
-                {isSoldOut ? "Sold Out" : "Coming Soon"}
-              </button>
+              <span className="text-[10px] font-body uppercase tracking-widest text-muted-foreground bg-muted/30 px-2 py-1">
+                {isSoldOut ? "Sold Out" : "Soon"}
+              </span>
             ) : quantity === 0 ? (
               <button
                 onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
                 disabled={isDisabled}
-                className="w-full h-12 flex items-center justify-center font-body text-[11px] uppercase tracking-[0.2em] bg-foreground text-background hover:bg-foreground/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+                className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                aria-label="Add to Cart"
               >
-                Add to Bag
+                <ShoppingBag className="w-5 h-5" />
               </button>
             ) : (
-              <div className="flex items-center w-full h-12 border border-foreground/10 bg-muted/10">
+              <div className="flex items-center border border-border bg-card">
                 <button
                   onClick={() =>
                     quantity === 1
                       ? removeFromCart(product.id, selectedSize, activeVariant?.label)
                       : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
                   }
-                  className="w-12 h-full flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
+                  className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                 >
                   <Minus className="w-3 h-3" />
                 </button>
-                <div className="flex-1 flex items-center justify-center font-body text-sm font-medium">
-                  {quantity} in Bag
-                </div>
+                <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                  {quantity}
+                </span>
                 <button
                   onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                  className="w-12 h-full flex items-center justify-center hover:bg-foreground hover:text-background transition-all"
+                  className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
                 >
                   <Plus className="w-3 h-3" />
                 </button>
