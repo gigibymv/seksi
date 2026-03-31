@@ -50,7 +50,7 @@ export const products: Product[] = [
     image: hatBlackRed,
     description: "100% Cotton",
     variants: [
-      { id: "cap-black", label: "Black", color: "#1a1a1a", image: hatBlackRed },
+      { id: "cap-black", label: "Black", color: "#000000", image: hatBlackRed },
       { id: "cap-red", label: "Red", color: "#e31b23", image: hatBlackRed },
     ],
     sizes: ["One Size"],

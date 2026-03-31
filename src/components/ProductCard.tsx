@@ -10,6 +10,13 @@ import {
   CarouselPrevious,
   type CarouselApi
 } from "@/components/ui/carousel";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import SizeGuide from "./SizeGuide";
 
 interface ProductCardProps {
@@ -160,27 +167,29 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {!isSoldOut && !isComingSoon && showSizes ? (
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {availableSizes.map((size) => {
-                    const unavailable = product.unavailableSizes?.includes(size);
-                    return (
-                      <button
-                        key={size}
-                        onClick={() => !unavailable && setSelectedSize(size as Size)}
-                        disabled={unavailable}
-                        className={`min-w-[40px] h-10 px-2 text-[11px] font-body font-medium border transition-colors ${
-                          unavailable
-                            ? "border-border/50 text-muted-foreground/30 cursor-not-allowed line-through"
-                            : selectedSize === size
-                            ? "border-foreground bg-foreground text-background"
-                            : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    );
-                  })}
-                </div>
+                <Select value={selectedSize} onValueChange={(value) => setSelectedSize(value as Size)}>
+                  <SelectTrigger className="w-full font-body text-[10px] md:text-[11px] uppercase tracking-[0.2em] border-border bg-card h-10 px-3 hover:border-foreground transition-colors focus:ring-0 focus:ring-offset-0 rounded-none">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Size:</span>
+                      <SelectValue placeholder="Select Size" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border min-w-[120px] rounded-none shadow-xl z-[101]">
+                    {availableSizes.map((size) => {
+                      const unavailable = product.unavailableSizes?.includes(size);
+                      return (
+                        <SelectItem 
+                          key={size} 
+                          value={size} 
+                          disabled={unavailable}
+                          className="font-body text-[10px] md:text-[11px] uppercase tracking-[0.15em] py-3 focus:bg-muted focus:text-foreground cursor-pointer"
+                        >
+                          {size} {unavailable ? "(Sold Out)" : ""}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* T-shirt specific Bag Icon placement (at the end of sizes row) */}
