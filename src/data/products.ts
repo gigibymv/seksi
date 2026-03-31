@@ -7,6 +7,7 @@ import tshirtBlackFront from "@/assets/tshirt_black_front_new.png";
 import tshirtBlackBack from "@/assets/tshirt_black_back.png";
 import tshirtWhiteFront from "@/assets/tshirt_white_front.png";
 import tshirtWhiteBack from "@/assets/tshirt_white_back.png";
+import tshirtWhiteManFront from "@/assets/tshirt_white_man_front.png";
 import jacketProduct from "@/assets/jacket-product.png";
 import jacketStyled from "@/assets/jacket-styled.png";
 import vestProduct from "@/assets/vest-product.png";
@@ -29,6 +30,7 @@ export interface Product {
   category: Category;
   image: string;
   secondaryImage?: string;
+  extraImages?: string[];
   description: string;
   soldOut?: boolean;
   comingSoon?: boolean;
@@ -122,6 +124,7 @@ export const products: Product[] = [
     category: "tshirt",
     image: tshirtWhiteFront,
     secondaryImage: tshirtWhiteBack,
+    extraImages: [tshirtWhiteManFront],
     description: "100% Cotton",
     sizes: ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"],
   },

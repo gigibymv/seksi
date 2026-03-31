@@ -31,7 +31,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   const currentImage = activeVariant?.image || product.image;
   const hoverImage = activeVariant?.secondaryImage || product.secondaryImage;
-  const images = [currentImage, hoverImage].filter(Boolean) as string[];
+  const images = [currentImage, hoverImage, ...(product.extraImages || [])].filter(Boolean) as string[];
 
   // Auto-scroll logic to indicate there are more images (specifically the back of the T-shirt)
   useEffect(() => {
