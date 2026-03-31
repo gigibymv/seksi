@@ -172,10 +172,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
                 <Select value={selectedSize} onValueChange={(value) => setSelectedSize(value as Size)}>
-                  <SelectTrigger className="w-full font-body text-[10px] md:text-[11px] uppercase tracking-[0.2em] border-border bg-card h-10 px-3 hover:border-foreground transition-colors focus:ring-0 focus:ring-offset-0 rounded-none">
+                  <SelectTrigger className="w-full font-body text-[9px] md:text-[10px] uppercase tracking-[0.15em] border-border bg-card h-8 px-2.5 hover:border-foreground transition-colors focus:ring-0 focus:ring-offset-0 rounded-none">
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Size:</span>
-                      <SelectValue placeholder="Select Size" />
+                      <span className="text-muted-foreground/60 text-[8px] uppercase tracking-wider">Size:</span>
+                      <SelectValue placeholder="Select" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border min-w-[120px] rounded-none shadow-xl z-[101]">
@@ -246,7 +246,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         addToCart(product, selectedSize, activeVariant?.label, tempQuantity);
                         setIsAddingMode(false);
                       }}
-                      className="bg-foreground text-background px-4 h-8 font-body text-[10px] uppercase tracking-widest hover:bg-foreground/90 transition-colors"
+                      className="bg-foreground text-background px-5 h-8 font-body text-[10px] font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors shadow-sm"
                     >
                       Add
                     </button>
