@@ -5,15 +5,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import sizeGuideTshirt from "@/assets/size-guide-tshirt.png";
+import sizeGuideCap from "@/assets/size-guide-cap.png";
 
-const sizeData = [
-  { size: "S", chest: '36"', waist: '30"', length: '27"' },
-  { size: "M", chest: '38-40"', waist: '32-34"', length: '28"' },
-  { size: "L", chest: '42-44"', waist: '36-38"', length: '29"' },
-  { size: "XL", chest: '46-48"', waist: '40-42"', length: '30"' },
-];
+interface SizeGuideProps {
+  category: "cap" | "tshirt" | string;
+}
 
-const SizeGuide = () => {
+const SizeGuide = ({ category }: SizeGuideProps) => {
+  if (category !== "cap" && category !== "tshirt") return null;
+
+  const imageSrc = category === "cap" ? sizeGuideCap : sizeGuideTshirt;
+  const title = category === "cap" ? "Cap Size Guide" : "T-shirt Size Guide";
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -21,35 +25,13 @@ const SizeGuide = () => {
           Size Guide
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="font-display text-lg">Size Guide</DialogTitle>
+      <DialogContent className="max-w-[500px] p-6 overflow-hidden">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="font-display text-lg">{title}</DialogTitle>
         </DialogHeader>
-        <div className="overflow-x-auto">
-          <table className="w-full font-body text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left py-2 text-xs uppercase tracking-widest text-muted-foreground font-medium">Size</th>
-                <th className="text-left py-2 text-xs uppercase tracking-widest text-muted-foreground font-medium">Chest</th>
-                <th className="text-left py-2 text-xs uppercase tracking-widest text-muted-foreground font-medium">Waist</th>
-                <th className="text-left py-2 text-xs uppercase tracking-widest text-muted-foreground font-medium">Length</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sizeData.map((row) => (
-                <tr key={row.size} className="border-b border-border/50">
-                  <td className="py-2.5 font-medium">{row.size}</td>
-                  <td className="py-2.5 text-muted-foreground">{row.chest}</td>
-                  <td className="py-2.5 text-muted-foreground">{row.waist}</td>
-                  <td className="py-2.5 text-muted-foreground">{row.length}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="relative w-full overflow-hidden rounded-md border border-border bg-muted/20">
+          <img src={imageSrc} alt={title} className="w-full h-auto object-contain mix-blend-multiply" />
         </div>
-        <p className="font-body text-[11px] text-muted-foreground mt-2">
-          All measurements are approximate. For caps, one size fits most.
-        </p>
       </DialogContent>
     </Dialog>
   );

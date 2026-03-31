@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
   type CarouselApi
 } from "@/components/ui/carousel";
+import SizeGuide from "./SizeGuide";
 
 interface ProductCardProps {
   product: Product;
@@ -140,9 +141,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         {product.description && (
-          <p className="font-body text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-4">
+          <p className="font-body text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-2">
             {product.description}
           </p>
+        )}
+
+        {/* Size Guide */}
+        {(product.category === "cap" || product.category === "tshirt") && (
+          <div className="mb-4">
+            <SizeGuide category={product.category} />
+          </div>
         )}
 
         {/* Sizes & Actions Combined Row */}
