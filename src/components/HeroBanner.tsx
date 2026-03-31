@@ -37,7 +37,7 @@ const HeroBanner = () => {
             <img
               src={src}
               alt={`Collection slide ${i + 1}`}
-              className="w-full h-full object-cover object-top"
+              className={`w-full h-full object-cover ${i === 0 ? 'object-[20%_top]' : 'object-top'}`}
             />
           </div>
         ))}
