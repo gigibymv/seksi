@@ -125,8 +125,9 @@ const CartContent = ({ onCheckout }: CartContentProps) => {
           Proceed to Checkout
         </button>
         
-        <p className="text-[9px] text-center text-muted-foreground font-body uppercase tracking-[0.1em]">
-          Shipping and taxes calculated at checkout
+        <p className="text-[9px] text-center text-muted-foreground font-body uppercase tracking-[0.1em] leading-relaxed">
+          Shipping and taxes are included in the price.<br />
+          All products will be delivered at HBS.
         </p>
       </div>
     </div>

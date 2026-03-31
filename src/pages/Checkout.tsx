@@ -109,7 +109,7 @@ const Checkout = () => {
             You'll receive a confirmation at {form.email}.
           </p>
           <div className="bg-secondary/30 p-4 mb-8 text-sm font-body text-foreground border border-border text-left">
-            <strong>Important:</strong> Orders will be delivered on a fixed date on the HBS campus. An email will be sent when your order is available for pickup.
+            <strong>Important:</strong> All products will be delivered at HBS. An email will be sent when your order is available for pickup.
           </div>
           <button onClick={() => navigate("/")} className="btn-primary">
             Back to Shop
@@ -217,7 +217,7 @@ const Checkout = () => {
             <div className="space-y-2">
               <h3 className="font-display text-lg text-foreground">Delivery Information</h3>
               <p className="font-body text-xs text-muted-foreground leading-relaxed mt-1">
-                Orders will be delivered on a fixed date to the HBS campus. An email will be sent when your order is available for pickup.
+                All products will be delivered at HBS. Taxes and shipping are already included in the price.
               </p>
             </div>
 
