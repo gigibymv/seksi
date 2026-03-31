@@ -5,7 +5,7 @@ import banner3 from "@/assets/hero-banner-3.png";
 import banner4 from "@/assets/hero-banner-4.png";
 import banner5 from "@/assets/hero-banner-5.png";
 
-const slides = [banner4, banner1, banner3, banner5];
+const slides = [banner1, banner4, banner3, banner5];
 
 const HeroBanner = () => {
   const [current, setCurrent] = useState(0);
