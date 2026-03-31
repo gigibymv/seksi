@@ -12,7 +12,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"details" | "payment" | "confirmed">("details");
   const [paymentMethod, setPaymentMethod] = useState<"zelle" | "venmo">("zelle");
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ name: "", email: "", comment: "" });
 
   if (items.length === 0 && step !== "confirmed") {
     navigate("/cart");
@@ -48,7 +48,7 @@ const Checkout = () => {
       const orderItems = items.map((item) => {
         let baseName = item.product.name;
         // Generic naming for DB
-        if (item.product.category === "cap") baseName = "Hat";
+        if (item.product.category === "cap") baseName = "Cap";
         
         let name = baseName;
         if (item.variantLabel && item.variantLabel.trim() !== "") {
@@ -66,6 +66,17 @@ const Checkout = () => {
           unit_price: item.product.price,
         };
       });
+
+      // Inject order notes as a pseudo-item to surface it elegantly in the admin dashboard
+      if (form.comment && form.comment.trim() !== "") {
+        orderItems.push({
+          order_id: order.id,
+          product_name: `Note: ${form.comment.trim().substring(0, 500)}`,
+          product_category: "note" as any,
+          quantity: 1,
+          unit_price: 0,
+        });
+      }
 
       const { error: itemsError } = await supabase
         .from("order_items")
@@ -93,10 +104,13 @@ const Checkout = () => {
             <Check className="w-8 h-8 text-secondary-foreground" />
           </div>
           <h1 className="section-heading mb-4">Order Confirmed</h1>
-          <p className="font-body text-muted-foreground text-sm mb-8">
+          <p className="font-body text-muted-foreground text-sm mb-4">
             Thank you, {form.name}! We've received your order and payment confirmation.
             You'll receive a confirmation at {form.email}.
           </p>
+          <div className="bg-secondary/30 p-4 mb-8 text-sm font-body text-foreground border border-border text-left">
+            <strong>Important:</strong> La commande sera livrée à un jour fixe sur le campus de HBS. Un email vous sera envoyé quand votre commande sera disponible au retrait !
+          </div>
           <button onClick={() => navigate("/")} className="btn-primary">
             Back to Shop
           </button>
@@ -141,24 +155,50 @@ const Checkout = () => {
               <h2 className="font-display text-lg text-foreground mb-4">Order Summary</h2>
               <div className="space-y-4">
                 {items.map((item, idx) => {
-                  const variantImage = item.variantLabel 
-                    ? item.product.variants?.find(v => v.label === item.variantLabel)?.image 
+                  const variantImage = item.variantLabel
+                    ? item.product.variants?.find((v) => v.label === item.variantLabel)?.image
                     : null;
-                  
+
+                  let displayName = item.product.name;
+                  let displayColor = item.variantLabel;
+
+                  if (item.product.category === "cap") {
+                    displayName = "Cap";
+                  } else if (item.product.category === "tshirt") {
+                    if (item.product.name.includes('"Noir"')) {
+                      displayName = "The Nine T-shirt";
+                      displayColor = "Noir";
+                    } else if (item.product.name.includes('"Blanc"')) {
+                      displayName = "The Nine T-shirt";
+                      displayColor = "Blanc";
+                    }
+                  }
+
                   return (
                     <div key={idx} className="flex gap-4 items-center">
                       <div className="w-16 h-20 shrink-0 bg-muted/20 overflow-hidden relative">
-                        <img 
-                          src={variantImage || item.product.image} 
-                          alt={item.product.name} 
+                        <img
+                          src={variantImage || item.product.image}
+                          alt={item.product.name}
                           className="w-full h-full object-cover object-top"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-display text-sm text-foreground truncate">{item.product.name}</p>
+                        <p className="font-display text-sm text-foreground truncate">{displayName}</p>
                         <p className="font-body text-[11px] text-muted-foreground mt-1 truncate">
-                          {item.variantLabel && <span className="mr-2">Color: {item.variantLabel}</span>}
-                          {item.size !== "One Size" && <span>Size: {item.size}</span>}
+                          <span className="capitalize">{item.product.category}</span>
+                          {displayColor && (
+                            <>
+                              <span className="mx-1.5">·</span>
+                              <span className="mr-2 normal-case">Color: {displayColor}</span>
+                            </>
+                          )}
+                          {item.size !== "One Size" && (
+                            <>
+                              <span className="mr-1.5">·</span>
+                              <span className="normal-case">Size: {item.size}</span>
+                            </>
+                          )}
                         </p>
                         <p className="font-body text-xs font-medium text-foreground mt-1.5">
                           {item.quantity} × <span className="font-sans">${item.product.price}</span>
@@ -176,6 +216,9 @@ const Checkout = () => {
 
             <div className="space-y-2">
               <h3 className="font-display text-lg text-foreground">Delivery Information</h3>
+              <p className="font-body text-xs text-muted-foreground leading-relaxed mt-1">
+                Les commandes seront livrées à une date fixe sur le campus de HBS. Un email sera envoyé quand la commande sera disponible au retrait !
+              </p>
             </div>
 
           {/* Full Name */}
@@ -203,6 +246,20 @@ const Checkout = () => {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full border border-border bg-card px-4 py-3.5 font-body text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
               required
+            />
+          </div>
+
+          {/* Comment */}
+          <div>
+            <label className="font-body text-sm text-foreground block mb-2">
+              Order notes (optional)
+            </label>
+            <textarea
+              value={form.comment}
+              onChange={(e) => setForm({ ...form, comment: e.target.value })}
+              className="w-full border border-border bg-card px-4 py-3.5 font-body text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground resize-none"
+              rows={3}
+              placeholder="Ex: additional delivery info, custom request..."
             />
           </div>
 

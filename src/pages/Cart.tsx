@@ -46,8 +46,19 @@ const Cart = () => {
               : null;
               
             let displayName = product.name;
-            if (product.category === "cap") displayName = "Hat";
-            if (variantLabel) displayName += ` — "${variantLabel}"`;
+            let displayColor = variantLabel;
+
+            if (product.category === "cap") {
+              displayName = "Cap";
+            } else if (product.category === "tshirt") {
+              if (product.name.includes('"Noir"')) {
+                displayName = "The Nine T-shirt";
+                displayColor = "Noir";
+              } else if (product.name.includes('"Blanc"')) {
+                displayName = "The Nine T-shirt";
+                displayColor = "Blanc";
+              }
+            }
 
             return (
               <div key={`${product.id}-${size}-${variantLabel || 'base'}`} className="flex items-center gap-4 py-6">
@@ -65,10 +76,16 @@ const Cart = () => {
                   </h3>
                   <p className="font-body text-xs text-muted-foreground capitalize mt-0.5 space-x-2">
                     <span>{product.category}</span>
+                    {displayColor && (
+                      <>
+                        <span>·</span>
+                        <span className="normal-case">Color: {displayColor}</span>
+                      </>
+                    )}
                     {size !== "One Size" && (
                       <>
                         <span>·</span>
-                        <span>Size {size}</span>
+                        <span className="normal-case">Size: {size}</span>
                       </>
                     )}
                   </p>

@@ -63,7 +63,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* Image */}
       <div className="aspect-[3/4] overflow-hidden relative group/img bg-muted bg-opacity-20 z-0">
         {images.length > 1 ? (
-          <Carousel setApi={setApi} opts={{ loop: true }} className="w-full h-full">
+          <Carousel setApi={setApi} opts={{ loop: true }} className="absolute inset-0 w-full h-full [&>div]:h-full">
             <CarouselContent className="h-full ml-0">
               {images.map((imgSrc, i) => (
                 <CarouselItem key={i} className="pl-0 basis-full h-full">
@@ -172,7 +172,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Bottom Action Row: Variants & Add to Cart */}
-        <div className="mt-auto pt-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           {/* Variants */}
           {product.variants && product.variants.length > 1 ? (
             <div className="flex items-center gap-2">

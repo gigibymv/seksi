@@ -2,9 +2,10 @@ import hatBlackRed from "@/assets/hat-black-red.png";
 import hatGreenBlue from "@/assets/hat-green-blue.png";
 import hatYellowPink from "@/assets/hat-yellow-pink.png";
 import hatJeanBrown from "@/assets/hat-jean-brown.png";
-import tshirtBlackFront from "@/assets/tshirt_black_front.png";
+import tshirtBlackFront from "@/assets/tshirt_black_front_new.png";
 import tshirtBlackBack from "@/assets/tshirt_black_back.png";
 import tshirtWhiteFront from "@/assets/tshirt_white_front.png";
+import tshirtWhiteBack from "@/assets/tshirt_white_back.png";
 import jacketProduct from "@/assets/jacket-product.png";
 import jacketStyled from "@/assets/jacket-styled.png";
 import vestProduct from "@/assets/vest-product.png";
@@ -85,7 +86,7 @@ export const products: Product[] = [
     description: "",
     variants: [
       { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown },
-      { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
+      { id: "cap-brown", label: "Marron", color: "#7a4e2d", image: hatJeanBrown },
     ],
     sizes: ["One Size"],
   },
@@ -99,7 +100,7 @@ export const products: Product[] = [
     image: tshirtBlackFront,
     secondaryImage: tshirtBlackBack,
     description: "",
-    sizes: ["XS", "S", "M", "L", "XL"],
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
   },
   {
     id: "c27-tshirt-white",
@@ -107,8 +108,9 @@ export const products: Product[] = [
     price: 40,
     category: "tshirt",
     image: tshirtWhiteFront,
+    secondaryImage: tshirtWhiteBack,
     description: "",
-    sizes: ["XS", "S", "M", "L", "XL"],
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
   },
 
   // ── Jackets (Coming Soon) ───────────────────────
