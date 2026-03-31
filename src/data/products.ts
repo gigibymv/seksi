@@ -4,6 +4,7 @@ import hatYellowPink from "@/assets/hat-yellow-pink.png";
 import hatJeanBrown from "@/assets/hat-jean-brown.png";
 import tshirtBlackFront from "@/assets/tshirt_black_front.png";
 import tshirtBlackBack from "@/assets/tshirt_black_back.png";
+import tshirtWhiteFront from "@/assets/tshirt_white_front.png";
 import jacketProduct from "@/assets/jacket-product.png";
 import jacketStyled from "@/assets/jacket-styled.png";
 import vestProduct from "@/assets/vest-product.png";
@@ -102,13 +103,12 @@ export const products: Product[] = [
   },
   {
     id: "c27-tshirt-white",
-    name: "The C₂₇ Tee — White",
+    name: 'The Nine T-shirt - "Blanc"',
     price: 40,
     category: "tshirt",
-    image: "/placeholder.svg",
-    description: "Section C classic tee — White edition",
-    comingSoon: true,
-    sizes: ["S", "M", "L", "XL"],
+    image: tshirtWhiteFront,
+    description: "",
+    sizes: ["XS", "S", "M", "L", "XL"],
   },
 
   // ── Jackets (Coming Soon) ───────────────────────
