@@ -1,5 +1,5 @@
 import hatBlackRed from "@/assets/hat-black-red.png";
-import hatGreenBlue from "@/assets/hat-green-blue.png";
+import hatVertBleu from "@/assets/hat-vert-bleu.png";
 import hatYellowPink from "@/assets/hat-yellow-pink.png";
 import hatJeanBrown from "@/assets/hat-jean-brown.png";
 import tshirtBlackFront from "@/assets/tshirt_black_front_new.png";
@@ -47,7 +47,7 @@ export const products: Product[] = [
     description: "",
     variants: [
       { id: "cap-black", label: "Black", color: "#1a1a1a", image: hatBlackRed },
-      { id: "cap-red", label: "Red", color: "#c0392b", image: hatBlackRed },
+      { id: "cap-red", label: "Red", color: "#e31b23", image: hatBlackRed },
     ],
     sizes: ["One Size"],
   },
@@ -56,11 +56,11 @@ export const products: Product[] = [
     name: 'The Nine Cap — "Verte" & "Bleue"',
     price: 30,
     category: "cap",
-    image: hatGreenBlue,
+    image: hatVertBleu,
     description: "",
     variants: [
-      { id: "cap-green", label: "Green", color: "#1e7a3c", image: hatGreenBlue },
-      { id: "cap-blue", label: "Blue", color: "#2c5fa8", image: hatGreenBlue },
+      { id: "cap-green", label: "Green", color: "#1e7a3c", image: hatVertBleu },
+      { id: "cap-blue", label: "Blue", color: "#2c5fa8", image: hatVertBleu },
     ],
     sizes: ["One Size"],
   },

@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
-import { Loader2, Download, Lock, CheckCircle2, Circle, PackageCheck } from "lucide-react";
+import { Loader2, Download, Lock, CheckCircle2, Circle, PackageCheck, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface OrderItem {
   id: string;
@@ -83,24 +84,6 @@ const Admin = () => {
     }
   };
 
-  // ── Selection helpers ───────────────────────────
-  const toggleSelect = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const toggleSelectAll = () => {
-    if (selected.size === filteredOrders.length) {
-      setSelected(new Set());
-    } else {
-      setSelected(new Set(filteredOrders.map((o) => o.id)));
-    }
-  };
-
   // ── Status toggle ──────────────────────────────
   const isProcessed = (order: Order) => order.status === "processed";
 
@@ -127,6 +110,7 @@ const Admin = () => {
     }
   };
 
+  // ── Data Management ─────────────────────────────
   const markSelectedAsProcessed = async () => {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
@@ -141,14 +125,46 @@ const Admin = () => {
         prev.map((o) => (ids.includes(o.id) ? { ...o, status: "processed" } : o))
       );
       setSelected(new Set());
+      toast.success(`${ids.length} orders updated`);
     } catch (err) {
       console.error("Error bulk updating:", err);
+      toast.error("Update failed");
     } finally {
       setUpdatingIds(new Set());
     }
   };
 
-  // ── Filter ─────────────────────────────────────
+  const deleteOrder = async (orderId: string) => {
+    if (!window.confirm("Are you sure you want to delete this order?")) return;
+    
+    try {
+      const { error } = await supabase.from("orders").delete().eq("id", orderId);
+      if (error) throw error;
+      
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+      toast.success("Order deleted");
+    } catch (err) {
+      console.error("Error deleting order:", err);
+      toast.error("Deletion failed - check database permissions");
+    }
+  };
+
+  const clearTestOrders = async () => {
+    if (!window.confirm("Are you sure you want to delete ALL test orders?")) return;
+    
+    try {
+      const { error } = await supabase.from("orders").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      if (error) throw error;
+      
+      setOrders([]);
+      toast.success("All orders cleared");
+    } catch (err) {
+      console.error("Error clearing orders:", err);
+      toast.error("Clearing failed - check database permissions");
+    }
+  };
+
+  // ── Filter & Logic ─────────────────────────────
   const filteredOrders = orders.filter((o) => {
     if (filterStatus === "pending") return !isProcessed(o);
     if (filterStatus === "processed") return isProcessed(o);
@@ -157,6 +173,24 @@ const Admin = () => {
 
   const pendingCount = orders.filter((o) => !isProcessed(o)).length;
   const processedCount = orders.filter((o) => isProcessed(o)).length;
+
+  // ── Selection helpers ───────────────────────────
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selected.size === filteredOrders.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filteredOrders.map((o) => o.id)));
+    }
+  };
 
   // ── CSV Export ─────────────────────────────────
   const exportCSV = () => {
@@ -288,6 +322,13 @@ const Admin = () => {
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={clearTestOrders}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-destructive/10 text-destructive font-body text-[11px] uppercase tracking-widest hover:bg-destructive/20 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Clear Test Orders
+            </button>
             {selected.size > 0 && (
               <button
                 onClick={markSelectedAsProcessed}
@@ -481,26 +522,36 @@ const Admin = () => {
                       <TableCell className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
                         {order.payment_method}
                       </TableCell>
-                      {/* Status toggle */}
+                      {/* Status toggle & Delete */}
                       <TableCell className="text-center">
-                        <button
-                          onClick={() => toggleStatus(order.id, order.status)}
-                          disabled={isUpdating}
-                          className="transition-all hover:scale-110 disabled:opacity-50"
-                          title={
-                            processed
-                              ? "Click to mark as pending"
-                              : "Click to mark as processed"
-                          }
-                        >
-                          {isUpdating ? (
-                            <Loader2 className="w-5 h-5 animate-spin text-muted-foreground mx-auto" />
-                          ) : processed ? (
-                            <CheckCircle2 className="w-5 h-5 text-secondary mx-auto" />
-                          ) : (
-                            <Circle className="w-5 h-5 text-muted-foreground/40 mx-auto" />
-                          )}
-                        </button>
+                        <div className="flex items-center justify-center gap-3">
+                          <button
+                            onClick={() => toggleStatus(order.id, order.status)}
+                            disabled={isUpdating}
+                            className="transition-all hover:scale-110 disabled:opacity-50"
+                            title={
+                              processed
+                                ? "Click to mark as pending"
+                                : "Click to mark as processed"
+                            }
+                          >
+                            {isUpdating ? (
+                              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground mx-auto" />
+                            ) : processed ? (
+                              <CheckCircle2 className="w-5 h-5 text-secondary mx-auto" />
+                            ) : (
+                              <Circle className="w-5 h-5 text-muted-foreground/40 mx-auto" />
+                            )}
+                          </button>
+                          
+                          <button
+                            onClick={() => deleteOrder(order.id)}
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                            title="Delete Order"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

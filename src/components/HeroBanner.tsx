@@ -48,8 +48,8 @@ const HeroBanner = () => {
           <p className="font-body text-[10px] md:text-xs uppercase tracking-[0.35em] text-white/60 mb-3">
             Section C · Harvard Business School
           </p>
-          <h1 className="font-display text-3xl md:text-6xl lg:text-7xl font-medium text-white leading-[1.1] max-w-4xl drop-shadow-lg">
-            MERCH COLLECTION C&nbsp;'27
+          <h1 className="font-display text-3xl md:text-6xl lg:text-7xl font-medium text-white leading-[1.1] max-w-4xl drop-shadow-lg md:whitespace-nowrap">
+            MERCH (C)OLLECTION&nbsp;'27
           </h1>
           <a
             href="#collection"

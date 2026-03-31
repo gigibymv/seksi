@@ -146,107 +146,144 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Sizes & Actions Combined Row */}
-        <div className="flex flex-col gap-5 mt-4">
-          {!isSoldOut && !isComingSoon && showSizes && (
-            <div className="w-full">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {availableSizes.map((size) => {
-                  const unavailable = product.unavailableSizes?.includes(size);
-                  return (
+        <div className="mt-4">
+          {!isSoldOut && !isComingSoon && showSizes ? (
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {availableSizes.map((size) => {
+                    const unavailable = product.unavailableSizes?.includes(size);
+                    return (
+                      <button
+                        key={size}
+                        onClick={() => !unavailable && setSelectedSize(size as Size)}
+                        disabled={unavailable}
+                        className={`min-w-[40px] h-10 px-2 text-[11px] font-body font-medium border transition-colors ${
+                          unavailable
+                            ? "border-border/50 text-muted-foreground/30 cursor-not-allowed line-through"
+                            : selectedSize === size
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* T-shirt specific Bag Icon placement (at the end of sizes row) */}
+              <div className="shrink-0">
+                {quantity === 0 ? (
+                  <button
+                    onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
+                    disabled={isDisabled}
+                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                    aria-label="Add to Cart"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <div className="flex items-center border border-border bg-card">
                     <button
-                      key={size}
-                      onClick={() => !unavailable && setSelectedSize(size as Size)}
-                      disabled={unavailable}
-                      className={`min-w-[40px] h-10 px-2 text-[11px] font-body font-medium border transition-colors ${
-                        unavailable
-                          ? "border-border/50 text-muted-foreground/30 cursor-not-allowed line-through"
-                          : selectedSize === size
-                          ? "border-foreground bg-foreground text-background"
-                          : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                      onClick={() =>
+                        quantity === 1
+                          ? removeFromCart(product.id, selectedSize, activeVariant?.label)
+                          : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
+                      }
+                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
+                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* Cap / Standard layout for items without sizes */
+            <div className="w-full flex items-center justify-between">
+              {/* Variants row if multi-variant */}
+              <div className="flex items-center gap-2">
+                {product.variants && product.variants.length > 1 && product.variants.map((v) =>
+                  v.color ? (
+                    <button
+                      key={v.id}
+                      onClick={() => setActiveVariant(v)}
+                      title={v.label}
+                      className={`w-4 h-4 rounded-full transition-all ${
+                        activeVariant?.id === v.id
+                          ? "ring-1 ring-offset-2 ring-foreground scale-110"
+                          : "hover:scale-110 opacity-80"
+                      }`}
+                      style={{ backgroundColor: v.color }}
+                    />
+                  ) : (
+                    <button
+                      key={v.id}
+                      onClick={() => setActiveVariant(v)}
+                      className={`px-2 py-1 text-[10px] font-body border transition-colors ${
+                        activeVariant?.id === v.id
+                          ? "border-foreground text-foreground"
+                          : "border-border text-muted-foreground hover:border-foreground/50"
                       }`}
                     >
-                      {size}
+                      {v.label}
                     </button>
-                  );
-                })}
+                  )
+                )}
               </div>
-              <p className="font-body text-[10px] uppercase text-muted-foreground mt-2">True to size</p>
+
+              {/* Icon-only Add to Cart / Quantity */}
+              <div className="shrink-0">
+                {isSoldOut || isComingSoon ? (
+                  <span className="text-[10px] font-body uppercase tracking-widest text-muted-foreground bg-muted/30 px-2 py-1">
+                    {isSoldOut ? "Sold Out" : "Soon"}
+                  </span>
+                ) : quantity === 0 ? (
+                  <button
+                    onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
+                    disabled={isDisabled}
+                    className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
+                    aria-label="Add to Cart"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <div className="flex items-center border border-border bg-card">
+                    <button
+                      onClick={() =>
+                        quantity === 1
+                          ? removeFromCart(product.id, selectedSize, activeVariant?.label)
+                          : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
+                      }
+                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="font-body text-xs font-medium w-6 text-center text-foreground">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
+                      className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
-
-          {/* Action Row: Colors + Bag Icon */}
-          <div className="w-full flex items-center justify-between">
-            {/* Variants row if multi-variant */}
-            <div className="flex items-center gap-2">
-              {product.variants && product.variants.length > 1 && product.variants.map((v) =>
-                v.color ? (
-                  <button
-                    key={v.id}
-                    onClick={() => setActiveVariant(v)}
-                    title={v.label}
-                    className={`w-4 h-4 rounded-full transition-all ${
-                      activeVariant?.id === v.id
-                        ? "ring-1 ring-offset-2 ring-foreground scale-110"
-                        : "hover:scale-110 opacity-80"
-                    }`}
-                    style={{ backgroundColor: v.color }}
-                  />
-                ) : (
-                  <button
-                    key={v.id}
-                    onClick={() => setActiveVariant(v)}
-                    className={`px-2 py-1 text-[10px] font-body border transition-colors ${
-                      activeVariant?.id === v.id
-                        ? "border-foreground text-foreground"
-                        : "border-border text-muted-foreground hover:border-foreground/50"
-                    }`}
-                  >
-                    {v.label}
-                  </button>
-                )
-              )}
-            </div>
-
-            {/* Icon-only Add to Cart / Quantity */}
-            <div className="shrink-0">
-              {isSoldOut || isComingSoon ? (
-                <span className="text-[10px] font-body uppercase tracking-widest text-muted-foreground bg-muted/30 px-2 py-1">
-                  {isSoldOut ? "Sold Out" : "Soon"}
-                </span>
-              ) : quantity === 0 ? (
-                <button
-                  onClick={() => !isDisabled && addToCart(product, selectedSize, activeVariant?.label)}
-                  disabled={isDisabled}
-                  className="p-2.5 text-foreground border border-transparent hover:border-border hover:bg-muted transition-all rounded-full disabled:opacity-40"
-                  aria-label="Add to Cart"
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                </button>
-              ) : (
-                <div className="flex items-center border border-border bg-card">
-                  <button
-                    onClick={() =>
-                      quantity === 1
-                        ? removeFromCart(product.id, selectedSize, activeVariant?.label)
-                        : updateQuantity(product.id, selectedSize, quantity - 1, activeVariant?.label)
-                    }
-                    className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="font-body text-xs font-medium w-6 text-center text-foreground">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(product.id, selectedSize, quantity + 1, activeVariant?.label)}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
