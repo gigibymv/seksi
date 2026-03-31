@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Minus, Check, X, ShoppingBag } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCart, Size } from "@/context/CartContext";
-import SizeGuide from "./SizeGuide";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi
+} from "@/components/ui/carousel";
 
 interface ProductCardProps {
   product: Product;
@@ -19,9 +26,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
   );
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [api, setApi] = useState<CarouselApi>();
 
   const currentImage = activeVariant?.image || product.image;
   const hoverImage = activeVariant?.secondaryImage || product.secondaryImage;
+  const images = [currentImage, hoverImage].filter(Boolean) as string[];
+
+  // Auto-scroll logic to indicate there are more images (specifically the back of the T-shirt)
+  useEffect(() => {
+    if (!api || images.length <= 1) return;
+    
+    // Auto-scroll every 3 seconds so the user spots the change on mobile easily
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [api, images.length]);
 
   const cartItem = items.find(
     (item) => item.product.id === product.id && item.size === selectedSize && item.variantLabel === activeVariant?.label
@@ -39,18 +60,42 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div className="group relative bg-card flex flex-col h-full">
       {/* Image */}
-      <div
-        className="aspect-[3/4] overflow-hidden relative cursor-pointer"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={() => setIsModalOpen(true)}
-      >
-        <img
-          src={isHovered && hoverImage ? hoverImage : currentImage}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-          loading="lazy"
-        />
+      {/* Image */}
+      <div className="aspect-[3/4] overflow-hidden relative group/img bg-muted bg-opacity-20 z-0">
+        {images.length > 1 ? (
+          <Carousel setApi={setApi} opts={{ loop: true }} className="w-full h-full">
+            <CarouselContent className="h-full ml-0">
+              {images.map((imgSrc, i) => (
+                <CarouselItem key={i} className="pl-0 basis-full h-full">
+                  <img
+                    src={imgSrc}
+                    alt={`${product.name} view ${i + 1}`}
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => setIsModalOpen(true)}
+                    loading="lazy"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            
+            <div className="absolute inset-y-1/2 -mt-4 w-full flex justify-between px-3 pointer-events-none opacity-100 md:opacity-0 group-hover/img:opacity-100 transition-opacity z-10">
+              <CarouselPrevious 
+                className="relative inset-auto h-7 w-7 pointer-events-auto bg-background/90 hover:bg-background border-border/50 text-foreground translate-x-0 translate-y-0" 
+              />
+              <CarouselNext 
+                className="relative inset-auto h-7 w-7 pointer-events-auto bg-background/90 hover:bg-background border-border/50 text-foreground translate-x-0 translate-y-0" 
+              />
+            </div>
+          </Carousel>
+        ) : (
+          <img
+            src={currentImage}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03] cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+            loading="lazy"
+          />
+        )}
 
         {/* Sold out tag */}
         {isSoldOut && (
@@ -122,7 +167,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 );
               })}
             </div>
-            <SizeGuide />
+            <p className="font-body text-[10px] uppercase text-muted-foreground mt-2">True to size</p>
           </div>
         )}
 

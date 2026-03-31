@@ -92,13 +92,13 @@ export const products: Product[] = [
   // ── T-Shirts ────────────────────────────────────
   {
     id: "c27-tshirt-black",
-    name: "The C₂₇ Tee — Black",
+    name: 'The Nine T-shirt - "Noir"',
     price: 40,
     category: "tshirt",
     image: tshirtBlackFront,
     secondaryImage: tshirtBlackBack,
-    description: "Section C classic tee — Black edition",
-    sizes: ["S", "M", "L", "XL"],
+    description: "",
+    sizes: ["XS", "S", "M", "L", "XL"],
   },
   {
     id: "c27-tshirt-white",

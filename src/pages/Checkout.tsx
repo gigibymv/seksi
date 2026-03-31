@@ -49,7 +49,6 @@ const Checkout = () => {
         let baseName = item.product.name;
         // Generic naming for DB
         if (item.product.category === "cap") baseName = "Hat";
-        if (item.product.category === "tshirt") baseName = "T-shirt";
         
         let name = baseName;
         if (item.variantLabel && item.variantLabel.trim() !== "") {

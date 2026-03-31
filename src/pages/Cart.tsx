@@ -47,7 +47,6 @@ const Cart = () => {
               
             let displayName = product.name;
             if (product.category === "cap") displayName = "Hat";
-            if (product.category === "tshirt") displayName = "T-shirt";
             if (variantLabel) displayName += ` — "${variantLabel}"`;
 
             return (
