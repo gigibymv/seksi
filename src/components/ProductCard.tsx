@@ -58,7 +58,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const isDisabled = isSoldOut || isSizeUnavailable || isComingSoon;
 
   return (
-    <div className="group relative bg-card flex flex-col h-full">
+    <div className="group relative bg-card flex flex-col">
       {/* Image */}
       {/* Image */}
       <div className="aspect-[3/4] overflow-hidden relative group/img bg-muted/20 z-0 w-full">
@@ -172,7 +172,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Action Button Section */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-2">
           {/* Variants row if multi-variant */}
           <div className="flex items-center gap-2">
             {product.variants && product.variants.length > 1 && product.variants.map((v) =>
