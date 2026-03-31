@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Minus, Check } from "lucide-react";
+import { Plus, Minus, Check, X } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCart, Size } from "@/context/CartContext";
 import SizeGuide from "./SizeGuide";
@@ -18,6 +18,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     product.variants?.[0] || null
   );
   const [isHovered, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const currentImage = activeVariant?.image || product.image;
   const hoverImage = activeVariant?.secondaryImage || product.secondaryImage;
@@ -42,7 +43,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         className="aspect-[3/4] overflow-hidden relative cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => !isDisabled && addToCart(product, selectedSize)}
+        onClick={() => setIsModalOpen(true)}
       >
         <img
           src={isHovered && hoverImage ? hoverImage : currentImage}
@@ -209,6 +210,26 @@ const ProductCard = ({ product }: ProductCardProps) => {
           )}
         </div>
       </div>
+
+      {/* Fullscreen Image Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm p-4 md:p-10">
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="absolute top-6 right-6 p-2 text-foreground hover:bg-muted rounded-full transition-colors z-50"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="relative w-full h-full flex items-center justify-center" onClick={() => setIsModalOpen(false)}>
+            <img
+              src={isHovered && hoverImage ? hoverImage : currentImage}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain cursor-zoom-out"
+              onClick={(e) => e.stopPropagation()} 
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
