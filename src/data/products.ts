@@ -5,6 +5,7 @@ import hatJeanBrown from "@/assets/hat-jean-brown.png";
 import hatVertForet from "@/assets/hat-vert-foret.png";
 import tshirtBlackFront from "@/assets/tshirt_black_front_new.png";
 import tshirtBlackBack from "@/assets/tshirt_black_back.png";
+import tshirtBlackWmanFront from "@/assets/tshirt_black_wman_front.png";
 import tshirtWhiteFront from "@/assets/tshirt_white_front.png";
 import tshirtWhiteBack from "@/assets/tshirt_white_back.png";
 import tshirtWhiteManFront from "@/assets/tshirt_white_man_front.png";
@@ -114,6 +115,7 @@ export const products: Product[] = [
     category: "tshirt",
     image: tshirtBlackFront,
     secondaryImage: tshirtBlackBack,
+    extraImages: [tshirtBlackWmanFront],
     description: "100% Cotton",
     sizes: ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"],
   },
