@@ -132,9 +132,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <h3 className="font-display text-base md:text-lg font-medium text-foreground leading-snug">
             {product.name}
           </h3>
-          <span className="font-body text-base font-semibold text-foreground whitespace-nowrap">
-            ${product.price}
-          </span>
+          {!isComingSoon && (
+            <span className="font-body text-base font-semibold text-foreground whitespace-nowrap">
+              ${product.price}
+            </span>
+          )}
         </div>
 
         {product.description && (

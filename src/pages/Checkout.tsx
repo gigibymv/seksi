@@ -109,7 +109,7 @@ const Checkout = () => {
             You'll receive a confirmation at {form.email}.
           </p>
           <div className="bg-secondary/30 p-4 mb-8 text-sm font-body text-foreground border border-border text-left">
-            <strong>Important:</strong> La commande sera livrée à un jour fixe sur le campus de HBS. Un email vous sera envoyé quand votre commande sera disponible au retrait !
+            <strong>Important:</strong> Orders will be delivered on a fixed date on the HBS campus. An email will be sent when your order is available for pickup.
           </div>
           <button onClick={() => navigate("/")} className="btn-primary">
             Back to Shop
