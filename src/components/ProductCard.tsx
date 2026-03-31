@@ -126,9 +126,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       {/* Info Container */}
-      <div className="px-4 pt-5 pb-6 flex flex-col">
+      <div className="px-4 pt-5 pb-6 flex flex-col items-start text-left">
         {/* Name + Price row */}
-        <div className="flex items-start justify-between gap-2 mb-4">
+        <div className="w-full flex items-start justify-between gap-2 mb-4">
           <h3 className="font-display text-base md:text-lg font-medium text-foreground leading-snug">
             {product.name}
           </h3>
@@ -145,7 +145,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Sizes */}
         {!isSoldOut && !isComingSoon && showSizes && (
-          <div className="mb-6">
+          <div className="mb-4 w-full">
             <div className="flex items-center gap-1.5 flex-wrap">
               {availableSizes.map((size) => {
                 const unavailable = product.unavailableSizes?.includes(size);
@@ -171,8 +171,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Action Button Section */}
-        <div className="flex items-center justify-between mt-2">
+        {/* Action Button Section - Consolidated for Compactness */}
+        <div className="w-full flex items-end justify-between mt-2">
           {/* Variants row if multi-variant */}
           <div className="flex items-center gap-2">
             {product.variants && product.variants.length > 1 && product.variants.map((v) =>
