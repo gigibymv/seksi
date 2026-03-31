@@ -372,7 +372,7 @@ const Admin = () => {
               Revenue
             </p>
             <p className="font-body text-2xl font-semibold text-foreground">
-              ${orders.reduce((s, o) => s + o.total_amount, 0).toFixed(2)}
+              <span className="font-sans">$</span>{orders.reduce((s, o) => s + o.total_amount, 0).toFixed(2)}
             </p>
           </div>
           <div className="border border-border p-5">
@@ -505,19 +505,26 @@ const Admin = () => {
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1 py-2">
-                          {order.order_items?.map((item) => (
+                          {order.order_items?.filter(item => item.product_category !== "note").map((item) => (
                             <p
                               key={item.id}
                               className="font-body text-[11px] text-muted-foreground leading-relaxed"
                             >
-                              {item.quantity}× {item.product_name} — $
-                              {item.unit_price}
+                              {item.quantity}&times; {item.product_name} &mdash; <span className="font-sans">$</span>{item.unit_price}
+                            </p>
+                          ))}
+                          {order.order_items?.filter(item => item.product_category === "note").map((item) => (
+                            <p
+                              key={item.id}
+                              className="font-body text-[11px] text-foreground/60 italic leading-relaxed border-t border-border/40 mt-1 pt-1"
+                            >
+                              📝 {item.product_name.replace(/^Note:\s*/i, "")}
                             </p>
                           ))}
                         </div>
                       </TableCell>
                       <TableCell className="font-body text-sm text-foreground font-semibold text-right">
-                        ${order.total_amount.toFixed(2)}
+                        <span className="font-sans">$</span>{order.total_amount.toFixed(2)}
                       </TableCell>
                       <TableCell className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
                         {order.payment_method}

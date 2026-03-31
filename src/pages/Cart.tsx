@@ -128,7 +128,7 @@ const Cart = () => {
             <span className="font-body text-sm uppercase tracking-widest text-muted-foreground">
               Total
             </span>
-            <span className="font-display text-2xl font-semibold text-foreground">
+            <span className="font-body text-2xl font-semibold text-foreground">
               <span className="font-sans">$</span>{totalPrice.toFixed(2)}
             </span>
           </div>
