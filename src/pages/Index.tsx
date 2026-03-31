@@ -17,8 +17,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <HeroBanner />
-      <Lookbook />
-
       {/* Collection */}
       <section id="collection" className="container mx-auto px-4 md:px-6 pt-14 md:pt-20 pb-10">
         <div className="text-center mb-10 md:mb-12">
@@ -72,6 +70,8 @@ const Index = () => {
           </div>
         )}
       </section>
+
+      <Lookbook />
 
       {/* Footer */}
       <footer className="border-t border-border mt-16 md:mt-20 py-10 md:py-12">

@@ -1,17 +1,13 @@
-import capStyled from "@/assets/cap-styled.png";
-import capProduct from "@/assets/cap-product.png";
-import jacketStyled from "@/assets/jacket-styled.png";
-import vestStyled from "@/assets/vest-styled.png";
-import vestProduct from "@/assets/vest-product.png";
-import jacketProduct from "@/assets/jacket-product.png";
+import hatBlackRed from "@/assets/hat-black-red.png";
+import hatGreenBlue from "@/assets/hat-green-blue.png";
+import hatYellowPink from "@/assets/hat-yellow-pink.png";
+import hatJeanBrown from "@/assets/hat-jean-brown.png";
 
 const images = [
-  { src: jacketStyled, alt: "The 27th Ivy Jacket — campus styled look", span: "col-span-2 row-span-2" },
-  { src: capStyled, alt: "The 9th Cap — styled portrait", span: "col-span-1 row-span-1" },
-  { src: capProduct, alt: "The 9th Cap — Blue & Black Denim", span: "col-span-1 row-span-1" },
-  { src: vestStyled, alt: "The 27th Sleeveless Jacket — styled looks", span: "col-span-1 row-span-1" },
-  { src: vestProduct, alt: "The 27th Sleeveless Jacket — product detail", span: "col-span-1 row-span-1" },
-  { src: jacketProduct, alt: "The 27th Ivy Jacket — front and back", span: "col-span-2 row-span-1" },
+  { src: hatBlackRed, alt: "The Nine Cap — Black & Red", span: "col-span-2 row-span-2" },
+  { src: hatGreenBlue, alt: "The Nine Cap — Green & Blue", span: "col-span-1 row-span-1" },
+  { src: hatYellowPink, alt: "The Nine Cap — Yellow & Pink", span: "col-span-1 row-span-1" },
+  { src: hatJeanBrown, alt: "The Nine Cap — Jean & Brown", span: "col-span-2 row-span-1" },
 ];
 
 const Lookbook = () => {
