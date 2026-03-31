@@ -269,7 +269,7 @@ const Checkout = () => {
                       Send via Zelle
                     </p>
                     <p className="font-display text-xl md:text-2xl text-foreground">
-                      zelle@section-c.boutique
+                      562-292-9329
                     </p>
                   </>
                 ) : (
@@ -278,7 +278,7 @@ const Checkout = () => {
                       Send via Venmo
                     </p>
                     <p className="font-display text-xl md:text-2xl text-foreground">
-                      @section-c-boutique
+                      @vamsi-choday
                     </p>
                   </>
                 )}
