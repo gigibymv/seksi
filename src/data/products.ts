@@ -95,7 +95,7 @@ export const products: Product[] = [
   {
     id: "c27-tshirt-black",
     name: 'The Nine T-shirt - "Noir"',
-    price: 40,
+    price: 30,
     category: "tshirt",
     image: tshirtBlackFront,
     secondaryImage: tshirtBlackBack,
@@ -105,7 +105,7 @@ export const products: Product[] = [
   {
     id: "c27-tshirt-white",
     name: 'The Nine T-shirt - "Blanc"',
-    price: 40,
+    price: 30,
     category: "tshirt",
     image: tshirtWhiteFront,
     secondaryImage: tshirtWhiteBack,
