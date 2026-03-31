@@ -217,7 +217,7 @@ const Checkout = () => {
             <div className="space-y-2">
               <h3 className="font-display text-lg text-foreground">Delivery Information</h3>
               <p className="font-body text-xs text-muted-foreground leading-relaxed mt-1">
-                Les commandes seront livrées à une date fixe sur le campus de HBS. Un email sera envoyé quand la commande sera disponible au retrait !
+                Orders will be delivered on a fixed date to the HBS campus. An email will be sent when your order is available for pickup.
               </p>
             </div>
 
@@ -259,7 +259,7 @@ const Checkout = () => {
               onChange={(e) => setForm({ ...form, comment: e.target.value })}
               className="w-full border border-border bg-card px-4 py-3.5 font-body text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground resize-none"
               rows={3}
-              placeholder="Ex: additional delivery info, custom request..."
+              placeholder="Ex: custom request..."
             />
           </div>
 
