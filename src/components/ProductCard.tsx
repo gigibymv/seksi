@@ -42,6 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         className="aspect-[3/4] overflow-hidden relative cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => !isDisabled && addToCart(product, selectedSize)}
       >
         <img
           src={isHovered && hoverImage ? hoverImage : currentImage}
@@ -90,9 +91,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </span>
         </div>
 
-        <p className="font-body text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
-          {product.description}
-        </p>
+        {product.description && (
+          <p className="font-body text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
+            {product.description}
+          </p>
+        )}
 
         {/* Variants */}
         {product.variants && product.variants.length > 1 && (

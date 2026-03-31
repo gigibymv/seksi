@@ -40,7 +40,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatBlackRed,
-    description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
+    description: "",
     variants: [
       { id: "cap-black", label: "Black", color: "#1a1a1a", image: hatBlackRed },
       { id: "cap-red", label: "Red", color: "#c0392b", image: hatBlackRed },
@@ -53,7 +53,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatGreenBlue,
-    description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
+    description: "",
     variants: [
       { id: "cap-green", label: "Green", color: "#1e7a3c", image: hatGreenBlue },
       { id: "cap-blue", label: "Blue", color: "#2c5fa8", image: hatGreenBlue },
@@ -66,7 +66,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatYellowPink,
-    description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
+    description: "",
     variants: [
       { id: "cap-yellow", label: "Yellow", color: "#e6c84c", image: hatYellowPink },
       { id: "cap-pink", label: "Pink", color: "#d4829e", image: hatYellowPink },
@@ -79,7 +79,7 @@ export const products: Product[] = [
     price: 30,
     category: "cap",
     image: hatJeanBrown,
-    description: "Dad cap with embroidered Aldrich Nine script — C '27 Edition",
+    description: "",
     variants: [
       { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown },
       { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
