@@ -27,7 +27,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
   );
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalStartIndex, setModalStartIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
+  const [modalApi, setModalApi] = useState<CarouselApi>();
 
   const currentImage = activeVariant?.image || product.image;
   const hoverImage = activeVariant?.secondaryImage || product.secondaryImage;
@@ -72,7 +74,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     src={imgSrc}
                     alt={`${product.name} view ${i + 1}`}
                     className="w-full h-full object-cover cursor-pointer"
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => { setModalStartIndex(i); setIsModalOpen(true); }}
                     loading="lazy"
                   />
                 </CarouselItem>
@@ -93,7 +95,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             src={currentImage}
             alt={product.name}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03] cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => { setModalStartIndex(0); setIsModalOpen(true); }}
             loading="lazy"
           />
         )}
@@ -297,20 +299,44 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
       {/* Fullscreen Image Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm p-4 md:p-10">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm p-4 md:p-10"
+          onClick={() => setIsModalOpen(false)}
+        >
           <button
             onClick={() => setIsModalOpen(false)}
             className="absolute top-6 right-6 p-2 text-foreground hover:bg-muted rounded-full transition-colors z-50"
           >
             <X className="w-6 h-6" />
           </button>
-          <div className="relative w-full h-full flex items-center justify-center" onClick={() => setIsModalOpen(false)}>
-            <img
-              src={isHovered && hoverImage ? hoverImage : currentImage}
-              alt={product.name}
-              className="max-w-full max-h-full object-contain cursor-zoom-out"
-              onClick={(e) => e.stopPropagation()} 
-            />
+          <div
+            className="relative w-full max-w-2xl h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Carousel
+              setApi={setModalApi}
+              opts={{ loop: true, startIndex: modalStartIndex }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {images.map((imgSrc, i) => (
+                  <CarouselItem key={i} className="flex items-center justify-center">
+                    <img
+                      src={imgSrc}
+                      alt={`${product.name} view ${i + 1}`}
+                      className="max-h-[80vh] max-w-full object-contain cursor-zoom-out"
+                      onClick={() => setIsModalOpen(false)}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {images.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-2 bg-background/90 hover:bg-background border-border/50 text-foreground" />
+                  <CarouselNext className="right-2 bg-background/90 hover:bg-background border-border/50 text-foreground" />
+                </>
+              )}
+            </Carousel>
           </div>
         </div>
       )}
