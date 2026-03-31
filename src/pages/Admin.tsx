@@ -322,7 +322,7 @@ const Admin = () => {
             <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
               Orders
             </p>
-            <p className="font-display text-2xl font-semibold text-foreground">
+            <p className="font-body text-2xl font-semibold text-foreground">
               {orders.length}
             </p>
           </div>
@@ -330,7 +330,7 @@ const Admin = () => {
             <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
               Revenue
             </p>
-            <p className="font-display text-2xl font-semibold text-foreground">
+            <p className="font-body text-2xl font-semibold text-foreground">
               ${orders.reduce((s, o) => s + o.total_amount, 0).toFixed(2)}
             </p>
           </div>
@@ -338,7 +338,7 @@ const Admin = () => {
             <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
               Items Sold
             </p>
-            <p className="font-display text-2xl font-semibold text-foreground">
+            <p className="font-body text-2xl font-semibold text-foreground">
               {orders.reduce(
                 (s, o) =>
                   s + (o.order_items?.reduce((si, i) => si + i.quantity, 0) || 0),
@@ -350,7 +350,7 @@ const Admin = () => {
             <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
               Pending
             </p>
-            <p className="font-display text-2xl font-semibold text-foreground">
+            <p className="font-body text-2xl font-semibold text-foreground">
               {pendingCount}
             </p>
           </div>
