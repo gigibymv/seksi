@@ -155,26 +155,24 @@ const Admin = () => {
     }
   };
 
-  const clearTestOrders = async () => {
-    if (!window.confirm("CRITICAL: This will PERMANENTLY DELETE all orders and reset all statistics for Go-Live. Are you sure?")) return;
+  const clearArchivedOrders = async () => {
+    if (!window.confirm("CRITICAL: This will PERMANENTLY DELETE all archived orders. Active orders will NOT be affected. Are you sure?")) return;
     
     try {
       setLoading(true);
-      // We delete all orders. 
-      // Note: order_items should have 'on delete cascade' in Supabase.
       const { error } = await supabase
         .from("orders")
         .delete()
-        .neq("id", "00000000-0000-0000-0000-000000000000"); // Standard way to 'delete all' via client
+        .eq("status", "archived");
         
       if (error) throw error;
       
-      setOrders([]);
+      setOrders(prev => prev.filter(o => o.status !== "archived"));
       setSelected(new Set());
-      toast.success("Dashboard cleared. Ready for launch!");
+      toast.success("Archive permanently cleared.");
     } catch (err) {
-      console.error("Error clearing orders:", err);
-      toast.error("Format clear failed. Please check Supabase RLS.");
+      console.error("Error clearing archive:", err);
+      toast.error("Clear failed. Please check Supabase permissions.");
     } finally {
       setLoading(false);
     }
@@ -342,13 +340,15 @@ const Admin = () => {
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <button
-              onClick={clearTestOrders}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-destructive/10 text-destructive font-body text-[10px] uppercase tracking-widest hover:bg-destructive/20 transition-colors border border-destructive/20"
-            >
-              <Trash2 className="w-3 h-3" />
-              Reset Dashboard for Go-Live
-            </button>
+            {filterStatus === "archived" && archivedCount > 0 && (
+              <button
+                onClick={clearArchivedOrders}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-destructive/10 text-destructive font-body text-[10px] uppercase tracking-widest hover:bg-destructive/20 transition-colors border border-destructive/20"
+              >
+                <Trash2 className="w-3 h-3" />
+                Permanently Clear Archive
+              </button>
+            )}
             {selected.size > 0 && (
               <button
                 onClick={markSelectedAsProcessed}
@@ -392,7 +392,7 @@ const Admin = () => {
               Revenue
             </p>
             <p className="font-body text-2xl font-semibold text-foreground">
-              <span className="font-sans">$</span>{orders.reduce((s, o) => s + o.total_amount, 0).toFixed(2)}
+              <span className="font-sans">$</span>{orders.filter(o => !isArchived(o)).reduce((s, o) => s + o.total_amount, 0).toFixed(2)}
             </p>
           </div>
           <div className="border border-border p-5">
@@ -400,7 +400,7 @@ const Admin = () => {
               Items Sold
             </p>
             <p className="font-body text-2xl font-semibold text-foreground">
-              {orders.reduce(
+              {orders.filter(o => !isArchived(o)).reduce(
                 (s, o) =>
                   s + (o.order_items?.reduce((si, i) => si + i.quantity, 0) || 0),
                 0
