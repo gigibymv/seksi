@@ -160,6 +160,18 @@ const Admin = () => {
     
     try {
       setLoading(true);
+      const archivedIds = orders.filter(isArchived).map(o => o.id);
+      if (archivedIds.length === 0) return;
+
+      // First delete associated order items to handle potential FK constraints
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .delete()
+        .in("order_id", archivedIds);
+      
+      if (itemsError) throw itemsError;
+
+      // Then delete the orders themselves
       const { error } = await supabase
         .from("orders")
         .delete()
@@ -172,7 +184,7 @@ const Admin = () => {
       toast.success("Archive permanently cleared.");
     } catch (err) {
       console.error("Error clearing archive:", err);
-      toast.error("Clear failed. Please check Supabase permissions.");
+      toast.error("Clear failed. Check Supabase permissions/constraints.");
     } finally {
       setLoading(false);
     }
