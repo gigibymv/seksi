@@ -84,15 +84,15 @@ export const products: Product[] = [
   },
   {
     id: "nine-cap-jean-brown",
-    name: 'The Nine Cap — "Jean" & "Marron"',
+    name: 'The Nine Cap — "Marron" & "Jean"',
     price: 30,
     category: "cap",
     image: hatJeanBrown,
     description: "100% Cotton",
     soldOut: false,
     variants: [
-      { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown, soldOut: true },
       { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
+      { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown, soldOut: true },
     ],
     sizes: ["One Size"],
   },
