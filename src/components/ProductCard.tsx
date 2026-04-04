@@ -66,7 +66,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     .filter((item) => item.product.id === product.id)
     .reduce((sum, item) => sum + item.quantity, 0);
 
-  const isSoldOut = product.soldOut === true;
+  const isSoldOut = product.soldOut === true || activeVariant?.soldOut === true;
   const isComingSoon = product.comingSoon === true;
   const isSizeUnavailable = product.unavailableSizes?.includes(selectedSize);
   const isDisabled = isSoldOut || isSizeUnavailable || isComingSoon;
@@ -291,7 +291,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                           activeVariant?.id === v.id
                             ? "ring-1 ring-offset-2 ring-foreground scale-110"
                             : "hover:scale-110 opacity-80"
-                        }`}
+                        } ${v.soldOut ? "opacity-30" : ""}`}
                         style={{ backgroundColor: v.color }}
                       />
                     ) : (
@@ -302,9 +302,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
                           activeVariant?.id === v.id
                             ? "border-foreground text-foreground"
                             : "border-border text-muted-foreground hover:border-foreground/50"
-                        }`}
+                        } ${v.soldOut ? "opacity-30" : ""}`}
                       >
-                        {v.label}
+                        {v.label} {v.soldOut ? " (Sold Out)" : ""}
                       </button>
                     )
                   )}

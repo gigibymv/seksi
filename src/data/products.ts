@@ -22,6 +22,7 @@ export interface ProductVariant {
   color?: string;
   image: string;
   secondaryImage?: string;
+  soldOut?: boolean;
 }
 
 export interface Product {
@@ -88,8 +89,9 @@ export const products: Product[] = [
     category: "cap",
     image: hatJeanBrown,
     description: "100% Cotton",
+    soldOut: false,
     variants: [
-      { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown },
+      { id: "cap-jean", label: "Jean", color: "#6b88a8", image: hatJeanBrown, soldOut: true },
       { id: "cap-brown", label: "Brown", color: "#7a4e2d", image: hatJeanBrown },
     ],
     sizes: ["One Size"],
@@ -101,6 +103,7 @@ export const products: Product[] = [
     category: "cap",
     image: hatVertForet,
     description: "100% Cotton",
+    soldOut: true,
     variants: [
       { id: "cap-vert-foret", label: "Dark green", color: "#1E4D28", image: hatVertForet },
     ],
